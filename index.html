@@ -25,231 +25,317 @@
           serif:   ['"DM Serif Display"', 'serif'],
           sans:    ['Outfit', 'sans-serif'],
         },
+        screens: {
+          xs: '400px',
+          sm: '640px',
+          md: '768px',
+          lg: '1024px',
+          xl: '1280px',
+        },
         keyframes: {
-          fadeUp:    { from: { opacity:'0', transform:'translateY(30px)' }, to: { opacity:'1', transform:'translateY(0)' } },
-          ticker:    { from: { transform:'translateX(0)' }, to: { transform:'translateX(-50%)' } },
+          fadeUp:    { from:{ opacity:'0', transform:'translateY(24px)' }, to:{ opacity:'1', transform:'translateY(0)' } },
+          ticker:    { from:{ transform:'translateX(0)' }, to:{ transform:'translateX(-50%)' } },
           gridShift: { '0%':{ transform:'translate(0,0)' }, '100%':{ transform:'translate(60px,60px)' } },
-          pulse2:    { '0%,100%':{ opacity:'1', transform:'scale(1)' }, '50%':{ opacity:'0.5', transform:'scale(1.5)' } },
+          pulseGlow: { '0%,100%':{ opacity:'1', transform:'scale(1)' }, '50%':{ opacity:'0.4', transform:'scale(1.6)' } },
           blink:     { '0%,100%':{ opacity:'1' }, '50%':{ opacity:'0' } },
         },
         animation: {
-          'fade-up-1': 'fadeUp 0.8s ease both',
-          'fade-up-2': 'fadeUp 0.8s ease 0.1s both',
-          'fade-up-3': 'fadeUp 0.8s ease 0.2s both',
-          'fade-up-4': 'fadeUp 0.8s ease 0.3s both',
-          ticker:      'ticker 25s linear infinite',
-          gridShift:   'gridShift 20s linear infinite',
-          pulse2:      'pulse2 1.5s infinite',
-          blink:       'blink 1s step-end infinite',
+          'fu1': 'fadeUp 0.7s ease both',
+          'fu2': 'fadeUp 0.7s ease 0.1s both',
+          'fu3': 'fadeUp 0.7s ease 0.2s both',
+          'fu4': 'fadeUp 0.7s ease 0.3s both',
+          ticker:    'ticker 25s linear infinite',
+          gridShift: 'gridShift 20s linear infinite',
+          pulseGlow: 'pulseGlow 1.8s infinite',
+          blink:     'blink 1s step-end infinite',
         },
       }
     }
   }
 </script>
 <style>
+  /* Noise */
   body::before {
-    content:'';position:fixed;inset:0;
+    content:''; position:fixed; inset:0;
     background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
-    pointer-events:none;z-index:999;opacity:.4;
+    pointer-events:none; z-index:999; opacity:.35;
   }
+  /* Hero grid bg */
   .hero-grid {
-    background-image:linear-gradient(rgba(212,255,0,.03) 1px,transparent 1px),linear-gradient(90deg,rgba(212,255,0,.03) 1px,transparent 1px);
-    background-size:60px 60px;
+    background-image:
+      linear-gradient(rgba(212,255,0,.025) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(212,255,0,.025) 1px, transparent 1px);
+    background-size:50px 50px;
   }
-  .module-card::before {
-    content:'';position:absolute;top:0;left:0;right:0;height:2px;
-    background:#d4ff00;transform:scaleX(0);transition:transform .3s;transform-origin:left;
+  /* Card top-line on hover */
+  .mod-card::before {
+    content:''; position:absolute; top:0; left:0; right:0; height:2px;
+    background:#d4ff00; transform:scaleX(0); transition:transform .3s; transform-origin:left;
   }
-  .module-card:hover::before { transform:scaleX(1); }
+  .mod-card:hover::before { transform:scaleX(1); }
+  /* Button shimmer */
+  .btn-shine { position:relative; overflow:hidden; }
   .btn-shine::after {
-    content:'';position:absolute;inset:0;background:rgba(0,0,0,.15);
-    transform:translateX(-100%);transition:transform .3s;
+    content:''; position:absolute; inset:0;
+    background:rgba(0,0,0,.15); transform:translateX(-100%); transition:transform .3s;
   }
   .btn-shine:hover::after { transform:translateX(0); }
-  .reveal { opacity:0;transform:translateY(40px);transition:opacity .7s ease,transform .7s ease; }
-  .reveal.visible { opacity:1;transform:translateY(0); }
+  /* Scroll reveal */
+  .reveal { opacity:0; transform:translateY(32px); transition:opacity .65s ease, transform .65s ease; }
+  .reveal.visible { opacity:1; transform:translateY(0); }
+  /* Mobile menu */
+  #mobile-menu { transition: max-height .3s ease, opacity .3s ease; }
 </style>
 </head>
 <body class="bg-bg text-snow font-sans overflow-x-hidden">
 
-<!-- NAV -->
-<nav id="nav" class="fixed top-0 inset-x-0 z-50 flex items-center justify-between px-12 py-5 border-b border-transparent transition-all duration-300">
-  <div class="font-display text-accent text-2xl tracking-[4px]">AI QUICK START</div>
-  <a href="#kup" class="buy-link bg-accent text-black font-bold text-xs tracking-widest uppercase px-6 py-2.5 hover:bg-white transition-colors duration-200">Kup teraz — 39 zł</a>
+<!-- ═══════════════════════════════════════ NAV ═══════════════════════════════════════ -->
+<nav id="nav" class="fixed top-0 inset-x-0 z-50 border-b border-transparent transition-all duration-300">
+  <div class="flex items-center justify-between px-4 sm:px-8 lg:px-12 py-4">
+    <div class="font-display text-accent text-xl sm:text-2xl tracking-[3px] sm:tracking-[4px]">AI QUICK START</div>
+
+    <!-- Desktop CTA -->
+    <a href="#kup" class="buy-link hidden sm:inline-block bg-accent text-black font-bold text-xs tracking-widest uppercase px-5 py-2.5 hover:bg-white transition-colors duration-200">
+      Kup teraz — 39 zł
+    </a>
+
+    <!-- Mobile hamburger -->
+    <button id="hamburger" class="sm:hidden flex flex-col gap-1.5 p-2" aria-label="Menu">
+      <span class="ham-line block w-6 h-0.5 bg-snow transition-all duration-300"></span>
+      <span class="ham-line block w-6 h-0.5 bg-snow transition-all duration-300"></span>
+      <span class="ham-line block w-6 h-0.5 bg-snow transition-all duration-300"></span>
+    </button>
+  </div>
+
+  <!-- Mobile dropdown -->
+  <div id="mobile-menu" class="sm:hidden max-h-0 opacity-0 overflow-hidden bg-surface border-t border-border">
+    <div class="px-4 py-6 flex flex-col gap-4">
+      <a href="#kup" class="buy-link block bg-accent text-black font-bold text-sm tracking-widest uppercase px-6 py-4 text-center hover:bg-white transition-colors">
+        Kup teraz — 39 zł
+      </a>
+      <a href="#kup" class="text-muted text-sm text-center hover:text-snow transition-colors">Co dostajesz?</a>
+      <a href="#gwarancja" class="text-muted text-sm text-center hover:text-snow transition-colors">Gwarancja</a>
+    </div>
+  </div>
 </nav>
 
-<!-- HERO -->
-<section class="relative min-h-screen flex flex-col justify-end px-12 pb-20 pt-32 overflow-hidden">
+<!-- ═══════════════════════════════════════ HERO ════════════════════════════════════════ -->
+<section class="relative min-h-screen flex flex-col justify-end px-4 sm:px-8 lg:px-12 pb-16 sm:pb-20 pt-28 sm:pt-32 overflow-hidden">
   <div class="hero-grid animate-gridShift absolute inset-0 pointer-events-none"></div>
-  <div class="absolute right-12 top-1/2 -translate-y-1/2 font-display text-[25vw] text-accent/[0.04] leading-none select-none pointer-events-none hidden lg:block" style="letter-spacing:-10px">60</div>
 
-  <div class="animate-fade-up-1 inline-flex items-center gap-2 bg-accent/10 border border-accent/30 text-accent text-[11px] font-semibold tracking-[2px] uppercase px-4 py-2 mb-8 w-fit">
-    <span class="w-1.5 h-1.5 bg-accent rounded-full animate-pulse2"></span>
+  <!-- Decorative number — only on large screens -->
+  <div class="absolute right-6 lg:right-12 top-1/2 -translate-y-1/2 font-display text-accent/[0.04] leading-none select-none pointer-events-none hidden lg:block"
+       style="font-size:22vw; letter-spacing:-8px">60</div>
+
+  <div class="animate-fu1 inline-flex items-center gap-2 bg-accent/10 border border-accent/30 text-accent text-[10px] sm:text-[11px] font-semibold tracking-[2px] uppercase px-3 sm:px-4 py-1.5 sm:py-2 mb-6 sm:mb-8 w-fit">
+    <span class="w-1.5 h-1.5 bg-accent rounded-full animate-pulseGlow shrink-0"></span>
     Gotowe prompty · Bez technicznej wiedzy
   </div>
 
-  <h1 class="animate-fade-up-2 font-display text-[clamp(72px,11vw,160px)] leading-[.9] tracking-[2px] max-w-4xl">
+  <h1 class="animate-fu2 font-display leading-[.9] tracking-[1px] sm:tracking-[2px] max-w-4xl"
+      style="font-size: clamp(52px, 12vw, 152px)">
     ZBUDUJ<br>SWOJEGO<br><span class="text-accent">ASYSTENTA AI</span><br>W 60 MINUT
   </h1>
 
-  <p class="animate-fade-up-3 font-serif italic text-[clamp(18px,2.5vw,26px)] text-muted mt-6 max-w-xl leading-relaxed">
-    Przestań robić ręcznie to, co <strong class="text-snow not-italic font-sans font-semibold">AI może zrobić za Ciebie.</strong><br>
-    Maile, CV, plan dnia, posty — 5 gotowych asystentów do użycia od zaraz.
+  <p class="animate-fu3 font-serif italic text-muted mt-5 sm:mt-6 max-w-xl leading-relaxed"
+     style="font-size:clamp(16px, 2.5vw, 24px)">
+    Przestań robić ręcznie to, co
+    <strong class="text-snow not-italic font-sans font-semibold">AI może zrobić za Ciebie.</strong><br class="hidden sm:block">
+    Maile, CV, plan dnia, posty — 5 gotowych asystentów.
   </p>
 
-  <div class="animate-fade-up-4 flex items-center gap-6 mt-12 flex-wrap">
-    <a href="#kup" class="buy-link btn-shine relative overflow-hidden inline-block bg-accent text-black font-bold text-base px-10 py-[18px] hover:-translate-y-0.5 hover:shadow-[0_12px_40px_rgba(212,255,0,0.3)] transition-all duration-200">
+  <div class="animate-fu4 flex flex-col xs:flex-row items-start xs:items-center gap-4 xs:gap-6 mt-8 sm:mt-12">
+    <a href="#kup" class="buy-link btn-shine bg-accent text-black font-bold text-sm sm:text-base px-8 sm:px-10 py-4 sm:py-[18px] w-full xs:w-auto text-center hover:-translate-y-0.5 hover:shadow-[0_12px_40px_rgba(212,255,0,0.3)] transition-all duration-200">
       Chcę zaoszczędzić czas →
     </a>
     <span class="text-sm text-muted">Tylko <strong class="text-snow">39 zł</strong> · Dostęp od razu</span>
   </div>
 </section>
 
-<!-- TICKER -->
-<div class="bg-accent overflow-hidden whitespace-nowrap py-3">
+<!-- ═══════════════════════════════════════ TICKER ══════════════════════════════════════ -->
+<div class="bg-accent overflow-hidden whitespace-nowrap py-2.5 sm:py-3">
   <div class="inline-flex animate-ticker">
-    <span class="font-display text-black text-[15px] tracking-[3px] px-10">PISANIE MAILI</span>
-    <span class="font-display text-black/40 text-[15px] px-10">✦</span>
-    <span class="font-display text-black text-[15px] tracking-[3px] px-10">BUDOWANIE CV</span>
-    <span class="font-display text-black/40 text-[15px] px-10">✦</span>
-    <span class="font-display text-black text-[15px] tracking-[3px] px-10">PLANOWANIE DNIA</span>
-    <span class="font-display text-black/40 text-[15px] px-10">✦</span>
-    <span class="font-display text-black text-[15px] tracking-[3px] px-10">POSTY NA SOCIAL MEDIA</span>
-    <span class="font-display text-black/40 text-[15px] px-10">✦</span>
-    <span class="font-display text-black text-[15px] tracking-[3px] px-10">RESEARCH I NOTATKI</span>
-    <span class="font-display text-black/40 text-[15px] px-10">✦</span>
-    <!-- duplicate for loop -->
-    <span class="font-display text-black text-[15px] tracking-[3px] px-10">PISANIE MAILI</span>
-    <span class="font-display text-black/40 text-[15px] px-10">✦</span>
-    <span class="font-display text-black text-[15px] tracking-[3px] px-10">BUDOWANIE CV</span>
-    <span class="font-display text-black/40 text-[15px] px-10">✦</span>
-    <span class="font-display text-black text-[15px] tracking-[3px] px-10">PLANOWANIE DNIA</span>
-    <span class="font-display text-black/40 text-[15px] px-10">✦</span>
-    <span class="font-display text-black text-[15px] tracking-[3px] px-10">POSTY NA SOCIAL MEDIA</span>
-    <span class="font-display text-black/40 text-[15px] px-10">✦</span>
-    <span class="font-display text-black text-[15px] tracking-[3px] px-10">RESEARCH I NOTATKI</span>
-    <span class="font-display text-black/40 text-[15px] px-10">✦</span>
+    <span class="font-display text-black text-[13px] sm:text-[15px] tracking-[3px] px-6 sm:px-10">PISANIE MAILI</span>
+    <span class="font-display text-black/40 text-[13px] sm:text-[15px] px-6 sm:px-10">✦</span>
+    <span class="font-display text-black text-[13px] sm:text-[15px] tracking-[3px] px-6 sm:px-10">BUDOWANIE CV</span>
+    <span class="font-display text-black/40 text-[13px] sm:text-[15px] px-6 sm:px-10">✦</span>
+    <span class="font-display text-black text-[13px] sm:text-[15px] tracking-[3px] px-6 sm:px-10">PLANOWANIE DNIA</span>
+    <span class="font-display text-black/40 text-[13px] sm:text-[15px] px-6 sm:px-10">✦</span>
+    <span class="font-display text-black text-[13px] sm:text-[15px] tracking-[3px] px-6 sm:px-10">POSTY NA SOCIAL</span>
+    <span class="font-display text-black/40 text-[13px] sm:text-[15px] px-6 sm:px-10">✦</span>
+    <span class="font-display text-black text-[13px] sm:text-[15px] tracking-[3px] px-6 sm:px-10">RESEARCH I NOTATKI</span>
+    <span class="font-display text-black/40 text-[13px] sm:text-[15px] px-6 sm:px-10">✦</span>
+    <!-- dupe for seamless loop -->
+    <span class="font-display text-black text-[13px] sm:text-[15px] tracking-[3px] px-6 sm:px-10">PISANIE MAILI</span>
+    <span class="font-display text-black/40 text-[13px] sm:text-[15px] px-6 sm:px-10">✦</span>
+    <span class="font-display text-black text-[13px] sm:text-[15px] tracking-[3px] px-6 sm:px-10">BUDOWANIE CV</span>
+    <span class="font-display text-black/40 text-[13px] sm:text-[15px] px-6 sm:px-10">✦</span>
+    <span class="font-display text-black text-[13px] sm:text-[15px] tracking-[3px] px-6 sm:px-10">PLANOWANIE DNIA</span>
+    <span class="font-display text-black/40 text-[13px] sm:text-[15px] px-6 sm:px-10">✦</span>
+    <span class="font-display text-black text-[13px] sm:text-[15px] tracking-[3px] px-6 sm:px-10">POSTY NA SOCIAL</span>
+    <span class="font-display text-black/40 text-[13px] sm:text-[15px] px-6 sm:px-10">✦</span>
+    <span class="font-display text-black text-[13px] sm:text-[15px] tracking-[3px] px-6 sm:px-10">RESEARCH I NOTATKI</span>
+    <span class="font-display text-black/40 text-[13px] sm:text-[15px] px-6 sm:px-10">✦</span>
   </div>
 </div>
 
-<!-- PROBLEM -->
-<section class="reveal bg-surface border-y border-border px-12 py-28">
-  <div class="text-[11px] font-semibold tracking-[3px] uppercase text-accent mb-5 flex items-center gap-3 after:content-[''] after:h-px after:w-10 after:bg-accent">Problem</div>
-  <div class="grid grid-cols-1 lg:grid-cols-2 gap-20 items-center mt-16">
-    <ul class="flex flex-col gap-5">
-      <li class="flex items-start gap-4 p-5 border border-border hover:border-danger/40 transition-colors duration-200">
-        <span class="text-xl shrink-0 mt-0.5">⏳</span>
-        <span><span class="text-snow">Tracisz godziny na pisanie maili i dokumentów</span><span class="block text-sm text-muted mt-1">To samo zdanie 20 razy, inny adresat</span></span>
+<!-- ═══════════════════════════════════════ PROBLEM ═════════════════════════════════════ -->
+<section class="reveal bg-surface border-y border-border px-4 sm:px-8 lg:px-12 py-16 sm:py-20 lg:py-28">
+  <div class="text-[10px] sm:text-[11px] font-semibold tracking-[3px] uppercase text-accent mb-5 flex items-center gap-3 after:content-[''] after:h-px after:w-10 after:bg-accent">Problem</div>
+
+  <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-20 items-center mt-10 lg:mt-16">
+
+    <!-- Pain points -->
+    <ul class="flex flex-col gap-4">
+      <li class="flex items-start gap-3 sm:gap-4 p-4 sm:p-5 border border-border hover:border-danger/40 transition-colors duration-200">
+        <span class="text-lg sm:text-xl shrink-0 mt-0.5">⏳</span>
+        <span>
+          <span class="text-snow text-sm sm:text-base leading-snug">Tracisz godziny na pisanie maili i dokumentów</span>
+          <span class="block text-xs sm:text-sm text-muted mt-1">To samo zdanie 20 razy, inny adresat</span>
+        </span>
       </li>
-      <li class="flex items-start gap-4 p-5 border border-border hover:border-danger/40 transition-colors duration-200">
-        <span class="text-xl shrink-0 mt-0.5">🤷</span>
-        <span><span class="text-snow">Słyszysz o AI wszędzie, ale nie wiesz od czego zacząć</span><span class="block text-sm text-muted mt-1">YouTube daje 4h kursów, ty masz 20 minut</span></span>
+      <li class="flex items-start gap-3 sm:gap-4 p-4 sm:p-5 border border-border hover:border-danger/40 transition-colors duration-200">
+        <span class="text-lg sm:text-xl shrink-0 mt-0.5">🤷</span>
+        <span>
+          <span class="text-snow text-sm sm:text-base leading-snug">Słyszysz o AI wszędzie, ale nie wiesz od czego zacząć</span>
+          <span class="block text-xs sm:text-sm text-muted mt-1">YouTube daje 4h kursów, ty masz 20 minut</span>
+        </span>
       </li>
-      <li class="flex items-start gap-4 p-5 border border-border hover:border-danger/40 transition-colors duration-200">
-        <span class="text-xl shrink-0 mt-0.5">😤</span>
-        <span><span class="text-snow">Piszesz coś do ChatGPT, dostajesz bełkot i rezygnujesz</span><span class="block text-sm text-muted mt-1">Bez dobrego promptu — wynik jest do kosza</span></span>
+      <li class="flex items-start gap-3 sm:gap-4 p-4 sm:p-5 border border-border hover:border-danger/40 transition-colors duration-200">
+        <span class="text-lg sm:text-xl shrink-0 mt-0.5">😤</span>
+        <span>
+          <span class="text-snow text-sm sm:text-base leading-snug">Piszesz do ChatGPT, dostajesz bełkot i rezygnujesz</span>
+          <span class="block text-xs sm:text-sm text-muted mt-1">Bez dobrego promptu — wynik jest do kosza</span>
+        </span>
       </li>
-      <li class="flex items-start gap-4 p-5 border border-border hover:border-danger/40 transition-colors duration-200">
-        <span class="text-xl shrink-0 mt-0.5">📉</span>
-        <span><span class="text-snow">Twoi znajomi ogarniają AI, a ty zostajesz w tyle</span><span class="block text-sm text-muted mt-1">To nie moda — to nowy standard pracy</span></span>
+      <li class="flex items-start gap-3 sm:gap-4 p-4 sm:p-5 border border-border hover:border-danger/40 transition-colors duration-200">
+        <span class="text-lg sm:text-xl shrink-0 mt-0.5">📉</span>
+        <span>
+          <span class="text-snow text-sm sm:text-base leading-snug">Twoi znajomi ogarniają AI, a ty zostajesz w tyle</span>
+          <span class="block text-xs sm:text-sm text-muted mt-1">To nie moda — to nowy standard pracy</span>
+        </span>
       </li>
     </ul>
+
+    <!-- Stats -->
     <div>
-      <h2 class="font-display text-[clamp(48px,7vw,96px)] leading-[.95] tracking-wide mb-6">CZAS TO<br>TWÓJ<br>KAPITAŁ</h2>
-      <p class="text-lg text-muted leading-relaxed max-w-md">
-        Przeciętny pracownik traci <strong class="text-snow">2–3 godziny dziennie</strong> na zadania, które AI mogłoby zrobić w 30 sekund. To kwestia posiadania <strong class="text-snow">właściwych narzędzi i gotowych promptów.</strong>
+      <h2 class="font-display leading-[.95] tracking-wide mb-5 sm:mb-6"
+          style="font-size:clamp(40px,7vw,88px)">CZAS TO<br>TWÓJ<br>KAPITAŁ</h2>
+      <p class="text-base sm:text-lg text-muted leading-relaxed max-w-md">
+        Przeciętny pracownik traci <strong class="text-snow">2–3 godziny dziennie</strong> na zadania, które AI mogłoby zrobić w 30 sekund. To kwestia posiadania <strong class="text-snow">właściwych narzędzi.</strong>
       </p>
-      <div class="flex flex-wrap gap-10 mt-12">
-        <div><div class="font-display text-[56px] text-accent leading-none">2h</div><div class="text-xs text-muted mt-1 max-w-[120px]">dziennie oszczędności przy regularnym użyciu AI</div></div>
-        <div><div class="font-display text-[56px] text-accent leading-none">60'</div><div class="text-xs text-muted mt-1 max-w-[120px]">tyle zajmuje wdrożenie całego systemu z ebooka</div></div>
-        <div><div class="font-display text-[56px] text-accent leading-none">5</div><div class="text-xs text-muted mt-1 max-w-[120px]">gotowych asystentów do użycia od zaraz</div></div>
+      <div class="grid grid-cols-3 gap-4 sm:gap-8 mt-8 sm:mt-12">
+        <div>
+          <div class="font-display text-accent leading-none" style="font-size:clamp(36px,6vw,56px)">2h</div>
+          <div class="text-[11px] sm:text-xs text-muted mt-1.5 leading-snug">oszczędności dziennie przy regularnym użyciu AI</div>
+        </div>
+        <div>
+          <div class="font-display text-accent leading-none" style="font-size:clamp(36px,6vw,56px)">60'</div>
+          <div class="text-[11px] sm:text-xs text-muted mt-1.5 leading-snug">wystarczy żeby wdrożyć cały system</div>
+        </div>
+        <div>
+          <div class="font-display text-accent leading-none" style="font-size:clamp(36px,6vw,56px)">5</div>
+          <div class="text-[11px] sm:text-xs text-muted mt-1.5 leading-snug">gotowych asystentów do użycia od zaraz</div>
+        </div>
       </div>
     </div>
   </div>
 </section>
 
-<!-- MODULES -->
-<section class="reveal px-12 py-28">
-  <div class="flex items-end justify-between mb-16 flex-wrap gap-6">
+<!-- ═══════════════════════════════════════ MODULES ═════════════════════════════════════ -->
+<section class="reveal px-4 sm:px-8 lg:px-12 py-16 sm:py-20 lg:py-28">
+  <div class="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-6 mb-10 sm:mb-14 lg:mb-16">
     <div>
-      <div class="text-[11px] font-semibold tracking-[3px] uppercase text-accent mb-5 flex items-center gap-3 after:content-[''] after:h-px after:w-10 after:bg-accent">Co dostajesz</div>
-      <h2 class="font-display text-[clamp(48px,7vw,96px)] leading-[.95] tracking-wide">5 ASYSTENTÓW<br>DO PRACY</h2>
+      <div class="text-[10px] sm:text-[11px] font-semibold tracking-[3px] uppercase text-accent mb-4 flex items-center gap-3 after:content-[''] after:h-px after:w-10 after:bg-accent">Co dostajesz</div>
+      <h2 class="font-display leading-[.95] tracking-wide" style="font-size:clamp(40px,7vw,88px)">5 ASYSTENTÓW<br>DO PRACY</h2>
     </div>
-    <p class="text-base text-muted max-w-xs leading-relaxed">Każdy asystent to gotowy prompt, przykład działania i instrukcja. Wklejasz, używasz.</p>
+    <p class="text-sm sm:text-base text-muted max-w-xs leading-relaxed">Każdy asystent to gotowy prompt, przykład i instrukcja. Wklejasz, używasz.</p>
   </div>
 
-  <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-0.5">
-    <div class="module-card relative md:col-span-2 bg-accent/5 border border-accent/30 p-10 overflow-hidden hover:border-accent/50 hover:-translate-y-1 transition-all duration-300">
-      <div class="font-display text-[13px] tracking-[3px] text-muted mb-4">01 / 05</div>
-      <div class="w-12 h-12 bg-accent/10 border border-accent/20 flex items-center justify-center text-2xl mb-5">✉️</div>
-      <h3 class="font-serif text-[28px] text-snow mb-3 leading-tight">Asystent do maili i komunikacji</h3>
-      <p class="text-sm text-muted leading-relaxed">Pisz profesjonalne maile w 10 sekund. Wklej temat, ton i odbiorcę — dostajesz gotową wiadomość. Działa dla follow-upów, reklamacji, ofert i odpowiedzi na trudnych klientów.</p>
-      <span class="inline-block mt-5 text-[11px] font-semibold tracking-[1.5px] uppercase text-accent border border-accent/30 px-2.5 py-1">Natychmiastowy efekt</span>
+  <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-px bg-border">
+
+    <!-- Featured: spans 2 cols on md+ -->
+    <div class="mod-card relative sm:col-span-2 bg-accent/5 p-6 sm:p-8 lg:p-10 overflow-hidden hover:bg-accent/[0.08] hover:-translate-y-0.5 transition-all duration-300">
+      <div class="font-display text-[13px] tracking-[3px] text-muted mb-3">01 / 05</div>
+      <div class="w-10 h-10 sm:w-12 sm:h-12 bg-accent/10 border border-accent/20 flex items-center justify-center text-xl sm:text-2xl mb-4 sm:mb-5">✉️</div>
+      <h3 class="font-serif text-xl sm:text-2xl lg:text-[28px] text-snow mb-2 sm:mb-3 leading-tight">Asystent do maili i komunikacji</h3>
+      <p class="text-xs sm:text-sm text-muted leading-relaxed">Pisz profesjonalne maile w 10 sekund. Wklej temat, ton i odbiorcę — dostajesz gotową wiadomość. Follow-upy, reklamacje, oferty, trudni klienci.</p>
+      <span class="inline-block mt-4 text-[10px] sm:text-[11px] font-semibold tracking-[1.5px] uppercase text-accent border border-accent/30 px-2.5 py-1">Natychmiastowy efekt</span>
     </div>
-    <div class="module-card relative bg-surface border border-border p-10 overflow-hidden hover:border-accent/20 hover:-translate-y-1 transition-all duration-300">
-      <div class="font-display text-[13px] tracking-[3px] text-muted mb-4">02 / 05</div>
-      <div class="w-12 h-12 bg-accent/10 border border-accent/20 flex items-center justify-center text-2xl mb-5">📄</div>
-      <h3 class="font-serif text-[22px] text-snow mb-3 leading-tight">Asystent do CV i LinkedIn</h3>
-      <p class="text-sm text-muted leading-relaxed">Opisz doświadczenie po ludzku — AI przerabia to na bullet pointy, które rekruterzy chcą widzieć.</p>
-      <span class="inline-block mt-5 text-[11px] font-semibold tracking-[1.5px] uppercase text-accent border border-accent/30 px-2.5 py-1">Kariera</span>
+
+    <div class="mod-card relative bg-surface p-6 sm:p-8 lg:p-10 overflow-hidden hover:-translate-y-0.5 transition-all duration-300">
+      <div class="font-display text-[13px] tracking-[3px] text-muted mb-3">02 / 05</div>
+      <div class="w-10 h-10 sm:w-12 sm:h-12 bg-accent/10 border border-accent/20 flex items-center justify-center text-xl sm:text-2xl mb-4 sm:mb-5">📄</div>
+      <h3 class="font-serif text-xl sm:text-[22px] text-snow mb-2 sm:mb-3 leading-tight">Asystent do CV i LinkedIn</h3>
+      <p class="text-xs sm:text-sm text-muted leading-relaxed">Opisz doświadczenie po ludzku — AI przerabia to na bullet pointy, które rekruterzy chcą widzieć.</p>
+      <span class="inline-block mt-4 text-[10px] sm:text-[11px] font-semibold tracking-[1.5px] uppercase text-accent border border-accent/30 px-2.5 py-1">Kariera</span>
     </div>
-    <div class="module-card relative bg-surface border border-border p-10 overflow-hidden hover:border-accent/20 hover:-translate-y-1 transition-all duration-300">
-      <div class="font-display text-[13px] tracking-[3px] text-muted mb-4">03 / 05</div>
-      <div class="w-12 h-12 bg-accent/10 border border-accent/20 flex items-center justify-center text-2xl mb-5">📅</div>
-      <h3 class="font-serif text-[22px] text-snow mb-3 leading-tight">Asystent do planowania dnia</h3>
-      <p class="text-sm text-muted leading-relaxed">Chaos w głowie zamień w konkretny plan. AI sortuje priorytety i tworzy harmonogram z listy zadań.</p>
-      <span class="inline-block mt-5 text-[11px] font-semibold tracking-[1.5px] uppercase text-accent border border-accent/30 px-2.5 py-1">Produktywność</span>
+
+    <div class="mod-card relative bg-surface p-6 sm:p-8 lg:p-10 overflow-hidden hover:-translate-y-0.5 transition-all duration-300">
+      <div class="font-display text-[13px] tracking-[3px] text-muted mb-3">03 / 05</div>
+      <div class="w-10 h-10 sm:w-12 sm:h-12 bg-accent/10 border border-accent/20 flex items-center justify-center text-xl sm:text-2xl mb-4 sm:mb-5">📅</div>
+      <h3 class="font-serif text-xl sm:text-[22px] text-snow mb-2 sm:mb-3 leading-tight">Asystent do planowania dnia</h3>
+      <p class="text-xs sm:text-sm text-muted leading-relaxed">Chaos w głowie zamień w konkretny plan. AI sortuje priorytety i tworzy harmonogram z listy zadań.</p>
+      <span class="inline-block mt-4 text-[10px] sm:text-[11px] font-semibold tracking-[1.5px] uppercase text-accent border border-accent/30 px-2.5 py-1">Produktywność</span>
     </div>
-    <div class="module-card relative bg-surface border border-border p-10 overflow-hidden hover:border-accent/20 hover:-translate-y-1 transition-all duration-300">
-      <div class="font-display text-[13px] tracking-[3px] text-muted mb-4">04 / 05</div>
-      <div class="w-12 h-12 bg-accent/10 border border-accent/20 flex items-center justify-center text-2xl mb-5">📱</div>
-      <h3 class="font-serif text-[22px] text-snow mb-3 leading-tight">Asystent do postów i social media</h3>
-      <p class="text-sm text-muted leading-relaxed">Instagram, LinkedIn, Twitter — jeden temat, trzy formaty, gotowe do wklejenia.</p>
-      <span class="inline-block mt-5 text-[11px] font-semibold tracking-[1.5px] uppercase text-accent border border-accent/30 px-2.5 py-1">Content</span>
+
+    <div class="mod-card relative bg-surface p-6 sm:p-8 lg:p-10 overflow-hidden hover:-translate-y-0.5 transition-all duration-300">
+      <div class="font-display text-[13px] tracking-[3px] text-muted mb-3">04 / 05</div>
+      <div class="w-10 h-10 sm:w-12 sm:h-12 bg-accent/10 border border-accent/20 flex items-center justify-center text-xl sm:text-2xl mb-4 sm:mb-5">📱</div>
+      <h3 class="font-serif text-xl sm:text-[22px] text-snow mb-2 sm:mb-3 leading-tight">Asystent do social media</h3>
+      <p class="text-xs sm:text-sm text-muted leading-relaxed">Instagram, LinkedIn, Twitter — jeden temat, trzy formaty, gotowe do wklejenia.</p>
+      <span class="inline-block mt-4 text-[10px] sm:text-[11px] font-semibold tracking-[1.5px] uppercase text-accent border border-accent/30 px-2.5 py-1">Content</span>
     </div>
-    <div class="module-card relative bg-surface border border-border p-10 overflow-hidden hover:border-accent/20 hover:-translate-y-1 transition-all duration-300">
-      <div class="font-display text-[13px] tracking-[3px] text-muted mb-4">05 / 05</div>
-      <div class="w-12 h-12 bg-accent/10 border border-accent/20 flex items-center justify-center text-2xl mb-5">🔍</div>
-      <h3 class="font-serif text-[22px] text-snow mb-3 leading-tight">Asystent do researchu i notatek</h3>
-      <p class="text-sm text-muted leading-relaxed">Podsumowania, raporty, wyciąganie kluczowych wniosków — research za Ciebie.</p>
-      <span class="inline-block mt-5 text-[11px] font-semibold tracking-[1.5px] uppercase text-accent border border-accent/30 px-2.5 py-1">Analiza</span>
+
+    <div class="mod-card relative bg-surface p-6 sm:p-8 lg:p-10 overflow-hidden hover:-translate-y-0.5 transition-all duration-300">
+      <div class="font-display text-[13px] tracking-[3px] text-muted mb-3">05 / 05</div>
+      <div class="w-10 h-10 sm:w-12 sm:h-12 bg-accent/10 border border-accent/20 flex items-center justify-center text-xl sm:text-2xl mb-4 sm:mb-5">🔍</div>
+      <h3 class="font-serif text-xl sm:text-[22px] text-snow mb-2 sm:mb-3 leading-tight">Asystent do researchu</h3>
+      <p class="text-xs sm:text-sm text-muted leading-relaxed">Podsumowania, raporty, kluczowe wnioski — research za Ciebie.</p>
+      <span class="inline-block mt-4 text-[10px] sm:text-[11px] font-semibold tracking-[1.5px] uppercase text-accent border border-accent/30 px-2.5 py-1">Analiza</span>
     </div>
-    <div class="module-card relative bg-accent/[0.03] border border-accent/20 p-10 overflow-hidden hover:border-accent/30 hover:-translate-y-1 transition-all duration-300">
-      <div class="font-display text-[13px] tracking-[3px] text-muted mb-4">BONUS</div>
-      <div class="w-12 h-12 bg-accent/10 border border-accent/20 flex items-center justify-center text-2xl mb-5">⚡</div>
-      <h3 class="font-serif text-[22px] text-snow mb-3 leading-tight">Setup w 10 minut</h3>
-      <p class="text-sm text-muted leading-relaxed">Jak zacząć z ChatGPT, jak pisać prompty i jak zbudować swój system — prosto, bez żargonu.</p>
-      <span class="inline-block mt-5 text-[11px] font-semibold tracking-[1.5px] uppercase text-accent border border-accent/30 px-2.5 py-1">Dla zupełnych noobów</span>
+
+    <div class="mod-card relative bg-accent/[0.03] p-6 sm:p-8 lg:p-10 overflow-hidden hover:-translate-y-0.5 transition-all duration-300">
+      <div class="font-display text-[13px] tracking-[3px] text-muted mb-3">BONUS</div>
+      <div class="w-10 h-10 sm:w-12 sm:h-12 bg-accent/10 border border-accent/20 flex items-center justify-center text-xl sm:text-2xl mb-4 sm:mb-5">⚡</div>
+      <h3 class="font-serif text-xl sm:text-[22px] text-snow mb-2 sm:mb-3 leading-tight">Setup w 10 minut</h3>
+      <p class="text-xs sm:text-sm text-muted leading-relaxed">Jak zacząć z ChatGPT, jak pisać prompty — od zera, bez żargonu.</p>
+      <span class="inline-block mt-4 text-[10px] sm:text-[11px] font-semibold tracking-[1.5px] uppercase text-accent border border-accent/30 px-2.5 py-1">Dla zupełnych noobów</span>
     </div>
   </div>
 </section>
 
-<!-- DEMO -->
-<section class="reveal bg-surface border-y border-border px-12 py-28">
-  <div class="text-[11px] font-semibold tracking-[3px] uppercase text-accent mb-5 flex items-center gap-3 after:content-[''] after:h-px after:w-10 after:bg-accent">Zobacz jak to działa</div>
-  <h2 class="font-display text-[clamp(48px,7vw,96px)] leading-[.95] tracking-wide mb-16">PROMPT →<br>WYNIK</h2>
+<!-- ═══════════════════════════════════════ DEMO ════════════════════════════════════════ -->
+<section class="reveal bg-surface border-y border-border px-4 sm:px-8 lg:px-12 py-16 sm:py-20 lg:py-28">
+  <div class="text-[10px] sm:text-[11px] font-semibold tracking-[3px] uppercase text-accent mb-4 flex items-center gap-3 after:content-[''] after:h-px after:w-10 after:bg-accent">Zobacz jak to działa</div>
+  <h2 class="font-display leading-[.95] tracking-wide mb-10 sm:mb-14 lg:mb-16"
+      style="font-size:clamp(40px,7vw,88px)">PROMPT →<br>WYNIK</h2>
+
   <div class="border border-border overflow-hidden">
-    <div class="bg-[#1a1a1a] border-b border-border px-5 py-3 flex items-center gap-2">
-      <div class="w-2.5 h-2.5 rounded-full bg-[#ff5f57]"></div>
-      <div class="w-2.5 h-2.5 rounded-full bg-[#ffbd2e]"></div>
-      <div class="w-2.5 h-2.5 rounded-full bg-[#28ca41]"></div>
-      <span class="text-xs text-muted ml-3">ChatGPT — Asystent Mailowy</span>
+    <!-- Window bar -->
+    <div class="bg-[#1a1a1a] border-b border-border px-4 sm:px-5 py-2.5 sm:py-3 flex items-center gap-1.5 sm:gap-2">
+      <div class="w-2 h-2 sm:w-2.5 sm:h-2.5 rounded-full bg-[#ff5f57]"></div>
+      <div class="w-2 h-2 sm:w-2.5 sm:h-2.5 rounded-full bg-[#ffbd2e]"></div>
+      <div class="w-2 h-2 sm:w-2.5 sm:h-2.5 rounded-full bg-[#28ca41]"></div>
+      <span class="text-[11px] sm:text-xs text-muted ml-2 sm:ml-3 truncate">ChatGPT — Asystent Mailowy</span>
     </div>
-    <div class="grid grid-cols-1 lg:grid-cols-2">
-      <div class="p-10">
-        <div class="text-[11px] font-semibold tracking-[2px] uppercase text-muted mb-5">Twój prompt (gotowy z ebooka)</div>
-        <div class="text-[15px] text-snow leading-relaxed font-mono">
-          <span class="text-accent font-sans font-semibold">TY:</span><br><br>
+
+    <!-- Two columns: stacked on mobile, side-by-side on lg -->
+    <div class="grid grid-cols-1 lg:grid-cols-2 divide-y lg:divide-y-0 lg:divide-x divide-border">
+      <div class="p-5 sm:p-8 lg:p-10">
+        <div class="text-[10px] sm:text-[11px] font-semibold tracking-[2px] uppercase text-muted mb-4">Twój prompt (gotowy z ebooka)</div>
+        <div class="text-sm sm:text-[15px] text-snow leading-relaxed font-mono">
+          <span class="text-accent font-sans font-semibold not-italic">TY:</span><br><br>
           Napisz profesjonalny mail do klienta,<br>który nie odpisał od 2 tygodni.<br><br>
           Ton: uprzejmy, ale konkretny.<br>
-          Cel: umówienie rozmowy w tym tygodniu.<br>
+          Cel: umówić rozmowę w tym tygodniu.<br>
           Moje imię: Hubert<br>
           Firma: XYZ Sp. z o.o.
         </div>
       </div>
-      <div class="p-10 border-t lg:border-t-0 lg:border-l border-border bg-accent/[0.02]">
-        <div class="text-[11px] font-semibold tracking-[2px] uppercase text-muted mb-5">Odpowiedź AI (w 3 sekundy)</div>
-        <div class="text-[15px] text-snow leading-relaxed space-y-3">
+      <div class="p-5 sm:p-8 lg:p-10 bg-accent/[0.02]">
+        <div class="text-[10px] sm:text-[11px] font-semibold tracking-[2px] uppercase text-muted mb-4">Odpowiedź AI (w 3 sekundy)</div>
+        <div class="text-sm sm:text-[15px] text-snow leading-relaxed space-y-2 sm:space-y-3">
           <p><strong>Temat:</strong> Czy możemy porozmawiać w tym tygodniu?</p>
           <p>Dzień dobry,</p>
           <p>Chciałem wrócić do naszej poprzedniej rozmowy i sprawdzić, czy mają Państwo chwilę na krótki call w tym tygodniu.</p>
@@ -262,107 +348,140 @@
   </div>
 </section>
 
-<!-- PRICING -->
-<section class="reveal px-12 py-28 text-center" id="kup">
-  <div class="text-[11px] font-semibold tracking-[3px] uppercase text-accent mb-5 flex items-center justify-center gap-3 before:content-[''] before:h-px before:w-10 before:bg-accent after:content-[''] after:h-px after:w-10 after:bg-accent">Oferta</div>
-  <h2 class="font-display text-[clamp(48px,7vw,96px)] leading-[.95] tracking-wide mb-4">JEDEN RAZ.<br>UŻYWASZ FOREVER.</h2>
-  <p class="text-lg text-muted mb-16">Bez subskrypcji. Bez comiesięcznych opłat. Płacisz raz, masz na zawsze.</p>
+<!-- ═══════════════════════════════════════ PRICING ═════════════════════════════════════ -->
+<section class="reveal px-4 sm:px-8 lg:px-12 py-16 sm:py-20 lg:py-28 text-center" id="kup">
+  <div class="text-[10px] sm:text-[11px] font-semibold tracking-[3px] uppercase text-accent mb-4 flex items-center justify-center gap-3 before:content-[''] before:h-px before:w-8 sm:before:w-10 before:bg-accent after:content-[''] after:h-px after:w-8 sm:after:w-10 after:bg-accent">Oferta</div>
+  <h2 class="font-display leading-[.95] tracking-wide mb-3 sm:mb-4"
+      style="font-size:clamp(40px,7vw,88px)">JEDEN RAZ.<br>UŻYWASZ FOREVER.</h2>
+  <p class="text-base sm:text-lg text-muted mb-10 sm:mb-16">Bez subskrypcji. Płacisz raz, masz na zawsze.</p>
 
-  <div class="relative max-w-lg mx-auto bg-surface border border-accent/40 px-12 py-16 before:content-[''] before:absolute before:top-0 before:left-0 before:right-0 before:h-[3px] before:bg-gradient-to-r before:from-accent before:to-transparent">
-    <span class="absolute top-5 right-5 bg-danger text-white text-[11px] font-bold tracking-[1.5px] uppercase px-3 py-1">🔥 Premiera</span>
-    <div class="text-lg text-muted line-through mb-2">79 zł</div>
-    <div class="font-display text-[96px] text-accent leading-none mb-2">39<span class="text-[32px] text-muted"> ZŁ</span></div>
-    <div class="text-sm text-muted mb-10">jednorazowa płatność · PDF + bonus · dostęp od razu</div>
-    <ul class="text-left space-y-3.5 mb-10">
-      <li class="flex items-start gap-3 text-[15px] text-snow/90"><span class="text-accent font-bold shrink-0">✓</span>5 gotowych asystentów AI (maile, CV, planowanie, social, research)</li>
-      <li class="flex items-start gap-3 text-[15px] text-snow/90"><span class="text-accent font-bold shrink-0">✓</span>Gotowe prompty do skopiowania — bez myślenia</li>
-      <li class="flex items-start gap-3 text-[15px] text-snow/90"><span class="text-accent font-bold shrink-0">✓</span>Setup w 10 minut — nawet jeśli nigdy nie używałeś AI</li>
-      <li class="flex items-start gap-3 text-[15px] text-snow/90"><span class="text-accent font-bold shrink-0">✓</span>Przykłady przed i po dla każdego asystenta</li>
-      <li class="flex items-start gap-3 text-[15px] text-snow/90"><span class="text-accent font-bold shrink-0">✓</span>PDF dostępny od razu po zakupie</li>
-      <li class="flex items-start gap-3 text-[15px] text-snow/90"><span class="text-accent font-bold shrink-0">✓</span>Dożywotni dostęp + przyszłe aktualizacje</li>
+  <div class="relative max-w-lg mx-auto bg-surface border border-accent/40 px-5 sm:px-10 lg:px-12 py-10 sm:py-14 lg:py-16
+              before:content-[''] before:absolute before:top-0 before:left-0 before:right-0 before:h-[3px] before:bg-gradient-to-r before:from-accent before:to-transparent">
+    <span class="absolute top-4 right-4 sm:top-5 sm:right-5 bg-danger text-white text-[10px] sm:text-[11px] font-bold tracking-[1.5px] uppercase px-2.5 sm:px-3 py-1">🔥 Premiera</span>
+
+    <div class="text-base sm:text-lg text-muted line-through mb-2">79 zł</div>
+    <div class="font-display text-accent leading-none mb-2" style="font-size:clamp(72px,15vw,96px)">
+      39<span class="text-muted" style="font-size:clamp(24px,5vw,32px)"> ZŁ</span>
+    </div>
+    <div class="text-xs sm:text-sm text-muted mb-8 sm:mb-10">jednorazowa płatność · PDF + bonus · dostęp od razu</div>
+
+    <ul class="text-left space-y-3 sm:space-y-3.5 mb-8 sm:mb-10">
+      <li class="flex items-start gap-2.5 sm:gap-3 text-xs sm:text-[15px] text-snow/90"><span class="text-accent font-bold shrink-0 mt-0.5">✓</span>5 gotowych asystentów AI (maile, CV, planowanie, social, research)</li>
+      <li class="flex items-start gap-2.5 sm:gap-3 text-xs sm:text-[15px] text-snow/90"><span class="text-accent font-bold shrink-0 mt-0.5">✓</span>Gotowe prompty do skopiowania — bez myślenia</li>
+      <li class="flex items-start gap-2.5 sm:gap-3 text-xs sm:text-[15px] text-snow/90"><span class="text-accent font-bold shrink-0 mt-0.5">✓</span>Setup w 10 minut — nawet jeśli nigdy nie używałeś AI</li>
+      <li class="flex items-start gap-2.5 sm:gap-3 text-xs sm:text-[15px] text-snow/90"><span class="text-accent font-bold shrink-0 mt-0.5">✓</span>Przykłady przed i po dla każdego asystenta</li>
+      <li class="flex items-start gap-2.5 sm:gap-3 text-xs sm:text-[15px] text-snow/90"><span class="text-accent font-bold shrink-0 mt-0.5">✓</span>PDF dostępny od razu po zakupie</li>
+      <li class="flex items-start gap-2.5 sm:gap-3 text-xs sm:text-[15px] text-snow/90"><span class="text-accent font-bold shrink-0 mt-0.5">✓</span>Dożywotni dostęp + przyszłe aktualizacje</li>
     </ul>
-    <a href="#" class="buy-link block w-full bg-accent text-black font-bold text-lg py-5 text-center hover:bg-white hover:-translate-y-0.5 hover:shadow-[0_16px_48px_rgba(212,255,0,0.25)] transition-all duration-200">
+
+    <a href="#" class="buy-link block w-full bg-accent text-black font-bold text-base sm:text-lg py-4 sm:py-5 text-center hover:bg-white hover:-translate-y-0.5 hover:shadow-[0_16px_48px_rgba(212,255,0,0.25)] transition-all duration-200">
       Kupuję za 39 zł →
     </a>
-    <p class="mt-4 text-sm text-muted">🔒 Bezpieczna płatność · Faktura VAT na życzenie</p>
+    <p class="mt-3 sm:mt-4 text-xs sm:text-sm text-muted">🔒 Bezpieczna płatność · Faktura VAT na życzenie</p>
 
     <!-- Inline guarantee nudge -->
-    <div class="mt-6 flex items-start gap-3 bg-white/[0.03] border border-white/10 p-4 text-left">
-      <span class="text-2xl shrink-0">🛡️</span>
-      <p class="text-sm text-muted leading-relaxed">Nie podoba Ci się? Napisz do nas na <a id="guarantee-email-inline" href="#" class="text-accent hover:underline">kontakt@TWOJADOMENA.pl</a> w ciągu 14 dni — <strong class="text-snow">zwrócimy Ci pieniądze bez pytań.</strong></p>
+    <div class="mt-5 sm:mt-6 flex items-start gap-3 bg-white/[0.03] border border-white/10 p-3 sm:p-4 text-left">
+      <span class="text-xl sm:text-2xl shrink-0">🛡️</span>
+      <p class="text-xs sm:text-sm text-muted leading-relaxed">
+        Nie podoba Ci się? Napisz na <a id="guarantee-email-inline" href="#" class="text-accent hover:underline break-all"></a> w ciągu 14 dni —
+        <strong class="text-snow">zwrócimy Ci pieniądze bez pytań.</strong>
+      </p>
     </div>
   </div>
 </section>
 
-<!-- GUARANTEE -->
-<section class="reveal border-t border-border px-12 py-24">
-  <div class="max-w-3xl mx-auto flex flex-col md:flex-row items-center gap-12">
-    <!-- Shield graphic -->
-    <div class="shrink-0 w-36 h-36 border-2 border-accent/40 flex items-center justify-center relative">
+<!-- ═══════════════════════════════════════ GUARANTEE ═══════════════════════════════════ -->
+<section class="reveal border-t border-border px-4 sm:px-8 lg:px-12 py-16 sm:py-20 lg:py-24" id="gwarancja">
+  <div class="max-w-4xl mx-auto flex flex-col md:flex-row items-center md:items-start gap-8 sm:gap-12">
+    <!-- Shield -->
+    <div class="shrink-0 w-24 h-24 sm:w-32 sm:h-32 lg:w-36 lg:h-36 border-2 border-accent/40 flex items-center justify-center relative">
       <div class="absolute inset-2 border border-accent/20"></div>
-      <span class="text-6xl">🛡️</span>
+      <span class="text-4xl sm:text-5xl lg:text-6xl">🛡️</span>
     </div>
     <!-- Text -->
-    <div>
-      <div class="text-[11px] font-semibold tracking-[3px] uppercase text-accent mb-3 flex items-center gap-3 after:content-[''] after:h-px after:w-10 after:bg-accent">Gwarancja satysfakcji</div>
-      <h2 class="font-display text-[clamp(36px,5vw,64px)] leading-[.95] tracking-wide mb-5">JEŚLI NIE JESTEŚ ZADOWOLONY —<br><span class="text-accent">ODDAMY CI PIENIĄDZE.</span></h2>
-      <p class="text-[16px] text-muted leading-relaxed mb-6 max-w-lg">
-        Wierzymy w to, co tworzymy. Jeśli w ciągu <strong class="text-snow">14 dni od zakupu</strong> uznasz, że produkt nie spełnił Twoich oczekiwań — napisz do nas jednego maila. Bez tłumaczenia się, bez procedur. <strong class="text-snow">Zwrot w 100%.</strong>
+    <div class="text-center md:text-left">
+      <div class="text-[10px] sm:text-[11px] font-semibold tracking-[3px] uppercase text-accent mb-3 flex items-center justify-center md:justify-start gap-3 after:content-[''] after:h-px after:w-10 after:bg-accent">Gwarancja satysfakcji</div>
+      <h2 class="font-display leading-[.95] tracking-wide mb-4 sm:mb-5"
+          style="font-size:clamp(28px,5vw,60px)">JEŚLI NIE JESTEŚ ZADOWOLONY —<br><span class="text-accent">ODDAMY CI PIENIĄDZE.</span></h2>
+      <p class="text-sm sm:text-base lg:text-[16px] text-muted leading-relaxed mb-5 sm:mb-6 max-w-lg mx-auto md:mx-0">
+        Wierzymy w to, co tworzymy. Jeśli w ciągu <strong class="text-snow">14 dni od zakupu</strong> uznasz, że produkt nie spełnił Twoich oczekiwań — napisz do nas jednego maila. Bez tłumaczenia, bez procedur. <strong class="text-snow">Zwrot w 100%.</strong>
       </p>
-      <a id="guarantee-email" href="#" class="inline-flex items-center gap-2 text-accent font-semibold text-[15px] hover:underline">
+      <a id="guarantee-email" href="#" class="inline-flex items-center gap-2 text-accent font-semibold text-sm sm:text-[15px] hover:underline break-all">
         <span>✉</span><span></span>
       </a>
     </div>
   </div>
 </section>
 
-<!-- FAQ -->
-<section class="reveal px-12 py-20 border-t border-border">
+<!-- ═══════════════════════════════════════ FAQ ══════════════════════════════════════════ -->
+<section class="reveal px-4 sm:px-8 lg:px-12 py-16 sm:py-20 border-t border-border">
   <div class="max-w-3xl mx-auto">
-    <div class="text-[11px] font-semibold tracking-[3px] uppercase text-accent mb-5 flex items-center gap-3 after:content-[''] after:h-px after:w-10 after:bg-accent">FAQ</div>
-    <h2 class="font-display text-[clamp(48px,7vw,96px)] leading-[.95] tracking-wide mb-12">PYTANIA</h2>
+    <div class="text-[10px] sm:text-[11px] font-semibold tracking-[3px] uppercase text-accent mb-4 flex items-center gap-3 after:content-[''] after:h-px after:w-10 after:bg-accent">FAQ</div>
+    <h2 class="font-display leading-[.95] tracking-wide mb-8 sm:mb-12"
+        style="font-size:clamp(40px,7vw,88px)">PYTANIA</h2>
     <div class="divide-y divide-border">
       <div class="faq-item">
-        <button class="faq-q w-full text-left py-6 text-[17px] font-medium flex justify-between items-center gap-4 hover:text-accent transition-colors">Czy muszę znać się na technologii?<span class="faq-toggle w-6 h-6 border border-border flex items-center justify-center shrink-0 font-light transition-all">+</span></button>
-        <div class="faq-a max-h-0 overflow-hidden transition-all duration-300"><p class="pb-6 text-[15px] text-muted leading-relaxed">Absolutnie nie. Ebook jest napisany dla zupełnych początkujących. Jeśli umiesz wkleić tekst i nacisnąć Enter — dasz radę. Tłumaczymy wszystko od podstaw, bez żargonu.</p></div>
+        <button class="faq-q w-full text-left py-5 sm:py-6 text-sm sm:text-[17px] font-medium flex justify-between items-center gap-3 sm:gap-4 hover:text-accent transition-colors">
+          Czy muszę znać się na technologii?
+          <span class="faq-toggle w-5 h-5 sm:w-6 sm:h-6 border border-border flex items-center justify-center shrink-0 font-light transition-all text-sm">+</span>
+        </button>
+        <div class="faq-a max-h-0 overflow-hidden transition-all duration-300"><p class="pb-5 sm:pb-6 text-sm sm:text-[15px] text-muted leading-relaxed">Absolutnie nie. Ebook jest napisany dla zupełnych początkujących. Jeśli umiesz wkleić tekst i nacisnąć Enter — dasz radę.</p></div>
       </div>
       <div class="faq-item">
-        <button class="faq-q w-full text-left py-6 text-[17px] font-medium flex justify-between items-center gap-4 hover:text-accent transition-colors">Czy muszę płacić za ChatGPT?<span class="faq-toggle w-6 h-6 border border-border flex items-center justify-center shrink-0 font-light transition-all">+</span></button>
-        <div class="faq-a max-h-0 overflow-hidden transition-all duration-300"><p class="pb-6 text-[15px] text-muted leading-relaxed">Wszystkie asystenty działają na darmowej wersji ChatGPT. Wersja płatna działa lepiej, ale nie jest wymagana żeby zacząć.</p></div>
+        <button class="faq-q w-full text-left py-5 sm:py-6 text-sm sm:text-[17px] font-medium flex justify-between items-center gap-3 sm:gap-4 hover:text-accent transition-colors">
+          Czy muszę płacić za ChatGPT?
+          <span class="faq-toggle w-5 h-5 sm:w-6 sm:h-6 border border-border flex items-center justify-center shrink-0 font-light transition-all text-sm">+</span>
+        </button>
+        <div class="faq-a max-h-0 overflow-hidden transition-all duration-300"><p class="pb-5 sm:pb-6 text-sm sm:text-[15px] text-muted leading-relaxed">Nie — wszystkie asystenty działają na darmowej wersji ChatGPT. Wersja płatna działa lepiej, ale nie jest wymagana żeby zacząć.</p></div>
       </div>
       <div class="faq-item">
-        <button class="faq-q w-full text-left py-6 text-[17px] font-medium flex justify-between items-center gap-4 hover:text-accent transition-colors">Kiedy dostanę dostęp?<span class="faq-toggle w-6 h-6 border border-border flex items-center justify-center shrink-0 font-light transition-all">+</span></button>
-        <div class="faq-a max-h-0 overflow-hidden transition-all duration-300"><p class="pb-6 text-[15px] text-muted leading-relaxed">Od razu po płatności. Na maila dostaniesz link do pobrania PDF. Bez czekania, bez rejestracji.</p></div>
+        <button class="faq-q w-full text-left py-5 sm:py-6 text-sm sm:text-[17px] font-medium flex justify-between items-center gap-3 sm:gap-4 hover:text-accent transition-colors">
+          Kiedy dostanę dostęp?
+          <span class="faq-toggle w-5 h-5 sm:w-6 sm:h-6 border border-border flex items-center justify-center shrink-0 font-light transition-all text-sm">+</span>
+        </button>
+        <div class="faq-a max-h-0 overflow-hidden transition-all duration-300"><p class="pb-5 sm:pb-6 text-sm sm:text-[15px] text-muted leading-relaxed">Od razu po płatności. Na maila dostaniesz link do pobrania PDF. Bez czekania, bez rejestracji.</p></div>
       </div>
       <div class="faq-item">
-        <button class="faq-q w-full text-left py-6 text-[17px] font-medium flex justify-between items-center gap-4 hover:text-accent transition-colors">A co jeśli to nie będzie dla mnie?<span class="faq-toggle w-6 h-6 border border-border flex items-center justify-center shrink-0 font-light transition-all">+</span></button>
-        <div class="faq-a max-h-0 overflow-hidden transition-all duration-300"><p class="pb-6 text-[15px] text-muted leading-relaxed">Jeśli w ciągu 14 dni stwierdzisz, że ebook nie był wart swojej ceny — napisz, zwrócimy pieniądze. Bez pytań.</p></div>
+        <button class="faq-q w-full text-left py-5 sm:py-6 text-sm sm:text-[17px] font-medium flex justify-between items-center gap-3 sm:gap-4 hover:text-accent transition-colors">
+          A co jeśli to nie będzie dla mnie?
+          <span class="faq-toggle w-5 h-5 sm:w-6 sm:h-6 border border-border flex items-center justify-center shrink-0 font-light transition-all text-sm">+</span>
+        </button>
+        <div class="faq-a max-h-0 overflow-hidden transition-all duration-300"><p class="pb-5 sm:pb-6 text-sm sm:text-[15px] text-muted leading-relaxed">Jeśli w ciągu 14 dni stwierdzisz, że ebook nie był wart swojej ceny — napisz, zwrócimy pieniądze. Bez pytań.</p></div>
       </div>
       <div class="faq-item">
-        <button class="faq-q w-full text-left py-6 text-[17px] font-medium flex justify-between items-center gap-4 hover:text-accent transition-colors">Czy to aktualny materiał?<span class="faq-toggle w-6 h-6 border border-border flex items-center justify-center shrink-0 font-light transition-all">+</span></button>
-        <div class="faq-a max-h-0 overflow-hidden transition-all duration-300"><p class="pb-6 text-[15px] text-muted leading-relaxed">Tak. Aktualizujemy materiał przy większych zmianach ChatGPT. Kupujesz raz — dostajesz przyszłe wersje bezpłatnie.</p></div>
+        <button class="faq-q w-full text-left py-5 sm:py-6 text-sm sm:text-[17px] font-medium flex justify-between items-center gap-3 sm:gap-4 hover:text-accent transition-colors">
+          Czy to aktualny materiał?
+          <span class="faq-toggle w-5 h-5 sm:w-6 sm:h-6 border border-border flex items-center justify-center shrink-0 font-light transition-all text-sm">+</span>
+        </button>
+        <div class="faq-a max-h-0 overflow-hidden transition-all duration-300"><p class="pb-5 sm:pb-6 text-sm sm:text-[15px] text-muted leading-relaxed">Tak. Aktualizujemy materiał przy większych zmianach ChatGPT. Kupujesz raz — dostajesz przyszłe wersje bezpłatnie.</p></div>
       </div>
     </div>
   </div>
 </section>
 
-<!-- FINAL CTA -->
-<section class="reveal text-center px-12 py-28 border-t border-border">
-  <div class="text-[11px] font-semibold tracking-[3px] uppercase text-accent mb-5 flex items-center justify-center gap-3 before:content-[''] before:h-px before:w-10 before:bg-accent after:content-[''] after:h-px after:w-10 after:bg-accent">Ostatni krok</div>
-  <h2 class="font-display text-[clamp(48px,7vw,96px)] leading-[.95] tracking-wide mb-6">PRZESTAŃ TRACIĆ CZAS.<br><span class="text-accent">ZACZNIJ DZIŚ.</span></h2>
-  <p class="text-lg text-muted mb-12">60 minut inwestycji. Oszczędność każdego dnia.</p>
-  <a href="#kup" class="buy-link btn-shine relative overflow-hidden inline-block bg-accent text-black font-bold text-lg px-14 py-6 hover:-translate-y-0.5 hover:shadow-[0_16px_48px_rgba(212,255,0,0.25)] transition-all duration-200">
+<!-- ═══════════════════════════════════════ FINAL CTA ═══════════════════════════════════ -->
+<section class="reveal text-center px-4 sm:px-8 lg:px-12 py-16 sm:py-20 lg:py-28 border-t border-border">
+  <div class="text-[10px] sm:text-[11px] font-semibold tracking-[3px] uppercase text-accent mb-4 flex items-center justify-center gap-3 before:content-[''] before:h-px before:w-8 sm:before:w-10 before:bg-accent after:content-[''] after:h-px after:w-8 sm:after:w-10 after:bg-accent">Ostatni krok</div>
+  <h2 class="font-display leading-[.95] tracking-wide mb-4 sm:mb-6"
+      style="font-size:clamp(36px,7vw,88px)">PRZESTAŃ TRACIĆ CZAS.<br><span class="text-accent">ZACZNIJ DZIŚ.</span></h2>
+  <p class="text-base sm:text-lg text-muted mb-8 sm:mb-12">60 minut inwestycji. Oszczędność każdego dnia.</p>
+  <a href="#kup" class="buy-link btn-shine inline-block w-full sm:w-auto bg-accent text-black font-bold text-base sm:text-lg px-8 sm:px-14 py-5 sm:py-6 hover:-translate-y-0.5 hover:shadow-[0_16px_48px_rgba(212,255,0,0.25)] transition-all duration-200">
     Zbuduj asystenta AI za 39 zł →
   </a>
 </section>
 
-<!-- FOOTER -->
-<footer class="border-t border-border px-12 py-10 flex items-center justify-between flex-wrap gap-4">
-  <div class="font-display text-accent text-xl tracking-[3px]">AI QUICK START</div>
-  <div class="text-sm text-muted">© <span id="current-year"></span> · Wszelkie prawa zastrzeżone · <a id="footer-contact" href="#" class="hover:text-snow transition-colors"></a></div>
-  <div class="flex gap-4 text-sm text-muted">
-    <a id="link-regulamin" href="#" class="hover:text-snow transition-colors">Regulamin</a>
-    <a id="link-privacy" href="#" class="hover:text-snow transition-colors">Polityka prywatności</a>
+<!-- ═══════════════════════════════════════ FOOTER ══════════════════════════════════════ -->
+<footer class="border-t border-border px-4 sm:px-8 lg:px-12 py-8 sm:py-10">
+  <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 sm:gap-6 text-center sm:text-left">
+    <div class="font-display text-accent text-xl tracking-[3px]">AI QUICK START</div>
+    <div class="text-xs sm:text-sm text-muted order-3 sm:order-2">
+      © <span id="current-year"></span> · Wszelkie prawa zastrzeżone ·
+      <a id="footer-contact" href="#" class="hover:text-snow transition-colors break-all"></a>
+    </div>
+    <div class="flex justify-center sm:justify-end gap-4 text-xs sm:text-sm text-muted order-2 sm:order-3">
+      <a id="link-regulamin" href="#" class="hover:text-snow transition-colors">Regulamin</a>
+      <a id="link-privacy" href="#" class="hover:text-snow transition-colors">Polityka prywatności</a>
+    </div>
   </div>
 </footer>
 
@@ -379,35 +498,70 @@
   };
   /* ============================================================ */
 
+  // Płatności
   document.querySelectorAll('.buy-link').forEach(el => { el.href = CONFIG.paymentUrl; });
 
-  // Guarantee emails
+  // Gwarancja e-mail
   ['guarantee-email', 'guarantee-email-inline'].forEach(id => {
     const el = document.getElementById(id);
     if (!el) return;
     el.href = `mailto:${CONFIG.contactEmail}`;
-    if (el.querySelector('span:last-child')) el.querySelector('span:last-child').textContent = CONFIG.contactEmail;
+    const span = el.querySelector('span:last-child');
+    if (span) span.textContent = CONFIG.contactEmail;
     else el.textContent = CONFIG.contactEmail;
   });
+
+  // Footer
   document.getElementById('link-regulamin').href        = CONFIG.regulaminUrl;
   document.getElementById('link-privacy').href          = CONFIG.privacyUrl;
   document.getElementById('footer-contact').textContent = CONFIG.contactEmail;
   document.getElementById('footer-contact').href        = `mailto:${CONFIG.contactEmail}`;
   document.getElementById('current-year').textContent   = new Date().getFullYear();
 
-  // Nav scroll
+  // Nav scroll effect
   const nav = document.getElementById('nav');
-  window.addEventListener('scroll', () => {
-    nav.style.background    = window.scrollY > 40 ? 'rgba(10,10,10,0.95)' : '';
-    nav.style.backdropFilter= window.scrollY > 40 ? 'blur(12px)' : '';
-    nav.style.borderColor   = window.scrollY > 40 ? '#222' : 'transparent';
+  const setNav = () => {
+    const s = window.scrollY > 40;
+    nav.style.background     = s ? 'rgba(10,10,10,0.96)' : '';
+    nav.style.backdropFilter = s ? 'blur(14px)' : '';
+    nav.style.borderColor    = s ? '#222' : 'transparent';
+  };
+  window.addEventListener('scroll', setNav, { passive: true });
+
+  // Mobile menu
+  const hamburger = document.getElementById('hamburger');
+  const mobileMenu = document.getElementById('mobile-menu');
+  let menuOpen = false;
+  hamburger.addEventListener('click', () => {
+    menuOpen = !menuOpen;
+    mobileMenu.style.maxHeight = menuOpen ? mobileMenu.scrollHeight + 'px' : '0';
+    mobileMenu.style.opacity   = menuOpen ? '1' : '0';
+    // Animate hamburger → X
+    const lines = hamburger.querySelectorAll('.ham-line');
+    if (menuOpen) {
+      lines[0].style.transform = 'translateY(8px) rotate(45deg)';
+      lines[1].style.opacity   = '0';
+      lines[2].style.transform = 'translateY(-8px) rotate(-45deg)';
+    } else {
+      lines.forEach(l => { l.style.transform = ''; l.style.opacity = ''; });
+    }
   });
+  // Close menu on link click
+  mobileMenu.querySelectorAll('a').forEach(a => a.addEventListener('click', () => {
+    menuOpen = false;
+    mobileMenu.style.maxHeight = '0';
+    mobileMenu.style.opacity   = '0';
+    hamburger.querySelectorAll('.ham-line').forEach(l => { l.style.transform = ''; l.style.opacity = ''; });
+  }));
 
   // Scroll reveal
-  const io = new IntersectionObserver(es => es.forEach(e => { if(e.isIntersecting){ e.target.classList.add('visible'); io.unobserve(e.target); }}), { threshold:.1 });
+  const io = new IntersectionObserver(
+    es => es.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); io.unobserve(e.target); } }),
+    { threshold: 0.08 }
+  );
   document.querySelectorAll('.reveal').forEach(el => io.observe(el));
 
-  // FAQ
+  // FAQ accordion
   document.querySelectorAll('.faq-item').forEach(item => {
     item.querySelector('.faq-q').addEventListener('click', () => {
       const open = item.dataset.open === '1';
@@ -415,13 +569,16 @@
         i.dataset.open = '0';
         i.querySelector('.faq-a').style.maxHeight = '0';
         const t = i.querySelector('.faq-toggle');
-        t.textContent = '+'; t.style.background=''; t.style.color=''; t.style.borderColor='';
+        t.textContent = '+'; t.style.cssText = '';
       });
       if (!open) {
         item.dataset.open = '1';
         item.querySelector('.faq-a').style.maxHeight = item.querySelector('.faq-a').scrollHeight + 'px';
         const t = item.querySelector('.faq-toggle');
-        t.textContent = '−'; t.style.background='#d4ff00'; t.style.color='#000'; t.style.borderColor='#d4ff00';
+        t.textContent = '−';
+        t.style.background = '#d4ff00';
+        t.style.color = '#000';
+        t.style.borderColor = '#d4ff00';
       }
     });
   });
