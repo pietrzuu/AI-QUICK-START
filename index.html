@@ -5,976 +5,257 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Twój Pierwszy Asystent AI — Zaoszczędź 2h Dziennie</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Outfit:wght@300;400;500;600&family=DM+Serif+Display:ital@0;1&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Outfit:wght@300;400;500;600;700&family=DM+Serif+Display:ital@0;1&display=swap" rel="stylesheet">
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+  tailwind.config = {
+    theme: {
+      extend: {
+        colors: {
+          bg:      '#0a0a0a',
+          surface: '#111111',
+          border:  '#222222',
+          accent:  '#d4ff00',
+          snow:    '#f5f5f0',
+          muted:   '#888888',
+          danger:  '#ff3b3b',
+        },
+        fontFamily: {
+          display: ['"Bebas Neue"', 'sans-serif'],
+          serif:   ['"DM Serif Display"', 'serif'],
+          sans:    ['Outfit', 'sans-serif'],
+        },
+        keyframes: {
+          fadeUp:    { from: { opacity:'0', transform:'translateY(30px)' }, to: { opacity:'1', transform:'translateY(0)' } },
+          ticker:    { from: { transform:'translateX(0)' }, to: { transform:'translateX(-50%)' } },
+          gridShift: { '0%':{ transform:'translate(0,0)' }, '100%':{ transform:'translate(60px,60px)' } },
+          pulse2:    { '0%,100%':{ opacity:'1', transform:'scale(1)' }, '50%':{ opacity:'0.5', transform:'scale(1.5)' } },
+          blink:     { '0%,100%':{ opacity:'1' }, '50%':{ opacity:'0' } },
+        },
+        animation: {
+          'fade-up-1': 'fadeUp 0.8s ease both',
+          'fade-up-2': 'fadeUp 0.8s ease 0.1s both',
+          'fade-up-3': 'fadeUp 0.8s ease 0.2s both',
+          'fade-up-4': 'fadeUp 0.8s ease 0.3s both',
+          ticker:      'ticker 25s linear infinite',
+          gridShift:   'gridShift 20s linear infinite',
+          pulse2:      'pulse2 1.5s infinite',
+          blink:       'blink 1s step-end infinite',
+        },
+      }
+    }
+  }
+</script>
 <style>
-  :root {
-    --bg: #0a0a0a;
-    --surface: #111111;
-    --border: #222222;
-    --accent: #d4ff00;
-    --accent-dim: #a8cc00;
-    --white: #f5f5f0;
-    --muted: #888888;
-    --red: #ff3b3b;
-  }
-
-  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
-  html { scroll-behavior: smooth; }
-
-  body {
-    background: var(--bg);
-    color: var(--white);
-    font-family: 'Outfit', sans-serif;
-    font-weight: 400;
-    overflow-x: hidden;
-    cursor: default;
-  }
-
-  /* NOISE TEXTURE OVERLAY */
   body::before {
-    content: '';
-    position: fixed;
-    inset: 0;
-    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
-    pointer-events: none;
-    z-index: 999;
-    opacity: 0.5;
+    content:'';position:fixed;inset:0;
+    background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+    pointer-events:none;z-index:999;opacity:.4;
   }
-
-  /* NAV */
-  nav {
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    z-index: 100;
-    padding: 20px 48px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    border-bottom: 1px solid transparent;
-    transition: border-color 0.3s, background 0.3s;
+  .hero-grid {
+    background-image:linear-gradient(rgba(212,255,0,.03) 1px,transparent 1px),linear-gradient(90deg,rgba(212,255,0,.03) 1px,transparent 1px);
+    background-size:60px 60px;
   }
-  nav.scrolled {
-    border-color: var(--border);
-    background: rgba(10,10,10,0.95);
-    backdrop-filter: blur(12px);
-  }
-  .nav-logo {
-    font-family: 'Bebas Neue', sans-serif;
-    font-size: 22px;
-    letter-spacing: 2px;
-    color: var(--accent);
-  }
-  .nav-cta {
-    background: var(--accent);
-    color: #000;
-    font-family: 'Outfit', sans-serif;
-    font-weight: 600;
-    font-size: 13px;
-    letter-spacing: 1px;
-    text-transform: uppercase;
-    padding: 10px 24px;
-    border: none;
-    cursor: pointer;
-    text-decoration: none;
-    display: inline-block;
-    transition: background 0.2s, transform 0.1s;
-  }
-  .nav-cta:hover { background: #fff; transform: translateY(-1px); }
-
-  /* HERO */
-  .hero {
-    min-height: 100vh;
-    display: flex;
-    flex-direction: column;
-    justify-content: flex-end;
-    padding: 0 48px 80px;
-    position: relative;
-    overflow: hidden;
-  }
-
-  .hero-grid-bg {
-    position: absolute;
-    inset: 0;
-    background-image:
-      linear-gradient(rgba(212,255,0,0.03) 1px, transparent 1px),
-      linear-gradient(90deg, rgba(212,255,0,0.03) 1px, transparent 1px);
-    background-size: 60px 60px;
-    animation: gridShift 20s linear infinite;
-  }
-
-  @keyframes gridShift {
-    0% { transform: translate(0, 0); }
-    100% { transform: translate(60px, 60px); }
-  }
-
-  .hero-badge {
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-    background: rgba(212,255,0,0.1);
-    border: 1px solid rgba(212,255,0,0.3);
-    color: var(--accent);
-    font-size: 12px;
-    font-weight: 600;
-    letter-spacing: 2px;
-    text-transform: uppercase;
-    padding: 8px 16px;
-    margin-bottom: 32px;
-    width: fit-content;
-    animation: fadeUp 0.8s ease both;
-  }
-
-  .hero-badge::before {
-    content: '';
-    width: 6px;
-    height: 6px;
-    background: var(--accent);
-    border-radius: 50%;
-    animation: pulse 1.5s infinite;
-  }
-
-  @keyframes pulse {
-    0%, 100% { opacity: 1; transform: scale(1); }
-    50% { opacity: 0.5; transform: scale(1.5); }
-  }
-
-  h1 {
-    font-family: 'Bebas Neue', sans-serif;
-    font-size: clamp(72px, 11vw, 160px);
-    line-height: 0.9;
-    letter-spacing: 2px;
-    color: var(--white);
-    animation: fadeUp 0.8s ease 0.1s both;
-    max-width: 900px;
-  }
-
-  h1 .accent-line {
-    color: var(--accent);
-    display: block;
-  }
-
-  .hero-sub {
-    font-family: 'DM Serif Display', serif;
-    font-style: italic;
-    font-size: clamp(18px, 2.5vw, 28px);
-    color: var(--muted);
-    margin-top: 24px;
-    max-width: 560px;
-    line-height: 1.5;
-    animation: fadeUp 0.8s ease 0.2s both;
-  }
-
-  .hero-sub strong { color: var(--white); font-style: normal; font-family: 'Outfit', sans-serif; font-weight: 600; }
-
-  .hero-actions {
-    display: flex;
-    align-items: center;
-    gap: 24px;
-    margin-top: 48px;
-    animation: fadeUp 0.8s ease 0.3s both;
-    flex-wrap: wrap;
-  }
-
-  .btn-primary {
-    background: var(--accent);
-    color: #000;
-    font-family: 'Outfit', sans-serif;
-    font-weight: 700;
-    font-size: 16px;
-    letter-spacing: 0.5px;
-    padding: 18px 40px;
-    border: none;
-    cursor: pointer;
-    text-decoration: none;
-    display: inline-block;
-    transition: all 0.2s;
-    position: relative;
-    overflow: hidden;
-  }
-  .btn-primary::after {
-    content: '';
-    position: absolute;
-    inset: 0;
-    background: rgba(0,0,0,0.15);
-    transform: translateX(-100%);
-    transition: transform 0.3s;
-  }
-  .btn-primary:hover::after { transform: translateX(0); }
-  .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 12px 40px rgba(212,255,0,0.3); }
-
-  .hero-price-hint {
-    font-size: 14px;
-    color: var(--muted);
-  }
-  .hero-price-hint strong { color: var(--white); }
-
-  .hero-number {
-    position: absolute;
-    right: 48px;
-    top: 50%;
-    transform: translateY(-50%);
-    font-family: 'Bebas Neue', sans-serif;
-    font-size: clamp(200px, 25vw, 360px);
-    color: rgba(212,255,0,0.04);
-    line-height: 1;
-    user-select: none;
-    pointer-events: none;
-    letter-spacing: -10px;
-  }
-
-  @keyframes fadeUp {
-    from { opacity: 0; transform: translateY(30px); }
-    to { opacity: 1; transform: translateY(0); }
-  }
-
-  /* TICKER */
-  .ticker {
-    background: var(--accent);
-    color: #000;
-    padding: 12px 0;
-    overflow: hidden;
-    white-space: nowrap;
-  }
-  .ticker-inner {
-    display: inline-flex;
-    gap: 0;
-    animation: ticker 25s linear infinite;
-  }
-  .ticker-item {
-    font-family: 'Bebas Neue', sans-serif;
-    font-size: 15px;
-    letter-spacing: 3px;
-    padding: 0 40px;
-    flex-shrink: 0;
-  }
-  .ticker-sep { opacity: 0.4; }
-  @keyframes ticker { from { transform: translateX(0); } to { transform: translateX(-50%); } }
-
-  /* SECTIONS */
-  section { padding: 120px 48px; }
-
-  .section-label {
-    font-size: 11px;
-    font-weight: 600;
-    letter-spacing: 3px;
-    text-transform: uppercase;
-    color: var(--accent);
-    margin-bottom: 20px;
-    display: flex;
-    align-items: center;
-    gap: 12px;
-  }
-  .section-label::after {
-    content: '';
-    height: 1px;
-    width: 40px;
-    background: var(--accent);
-  }
-
-  h2 {
-    font-family: 'Bebas Neue', sans-serif;
-    font-size: clamp(48px, 7vw, 96px);
-    line-height: 0.95;
-    letter-spacing: 1px;
-    color: var(--white);
-  }
-
-  /* PROBLEM SECTION */
-  .problem {
-    background: var(--surface);
-    border-top: 1px solid var(--border);
-    border-bottom: 1px solid var(--border);
-  }
-
-  .problem-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 80px;
-    align-items: center;
-    margin-top: 64px;
-  }
-
-  .problem-list {
-    list-style: none;
-    display: flex;
-    flex-direction: column;
-    gap: 20px;
-  }
-
-  .problem-list li {
-    display: flex;
-    align-items: flex-start;
-    gap: 16px;
-    font-size: 17px;
-    line-height: 1.5;
-    padding: 20px;
-    border: 1px solid var(--border);
-    position: relative;
-    transition: border-color 0.2s;
-  }
-  .problem-list li:hover { border-color: rgba(255,59,59,0.4); }
-
-  .problem-icon {
-    font-size: 20px;
-    flex-shrink: 0;
-    margin-top: 2px;
-  }
-
-  .problem-text { color: var(--white); }
-  .problem-sub { display: block; font-size: 13px; color: var(--muted); margin-top: 4px; }
-
-  .problem-right h2 { margin-bottom: 24px; }
-  .problem-right p { font-size: 18px; color: var(--muted); line-height: 1.7; max-width: 480px; }
-  .problem-right p strong { color: var(--white); }
-
-  .stat-row {
-    display: flex;
-    gap: 40px;
-    margin-top: 48px;
-  }
-  .stat {
-    display: flex;
-    flex-direction: column;
-    gap: 4px;
-  }
-  .stat-num {
-    font-family: 'Bebas Neue', sans-serif;
-    font-size: 56px;
-    color: var(--accent);
-    line-height: 1;
-  }
-  .stat-desc {
-    font-size: 13px;
-    color: var(--muted);
-    max-width: 120px;
-  }
-
-  /* WHAT YOU GET */
-  .modules {
-    position: relative;
-  }
-
-  .modules-header {
-    display: flex;
-    align-items: flex-end;
-    justify-content: space-between;
-    margin-bottom: 64px;
-    flex-wrap: wrap;
-    gap: 24px;
-  }
-
-  .modules-grid {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 2px;
-  }
-
-  .module-card {
-    background: var(--surface);
-    padding: 40px 32px;
-    border: 1px solid var(--border);
-    position: relative;
-    overflow: hidden;
-    transition: border-color 0.3s, transform 0.3s;
-    cursor: default;
-  }
-
   .module-card::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    height: 2px;
-    background: var(--accent);
-    transform: scaleX(0);
-    transition: transform 0.3s;
-    transform-origin: left;
+    content:'';position:absolute;top:0;left:0;right:0;height:2px;
+    background:#d4ff00;transform:scaleX(0);transition:transform .3s;transform-origin:left;
   }
-  .module-card:hover::before { transform: scaleX(1); }
-  .module-card:hover {
-    border-color: rgba(212,255,0,0.2);
-    transform: translateY(-4px);
+  .module-card:hover::before { transform:scaleX(1); }
+  .btn-shine::after {
+    content:'';position:absolute;inset:0;background:rgba(0,0,0,.15);
+    transform:translateX(-100%);transition:transform .3s;
   }
-
-  .module-num {
-    font-family: 'Bebas Neue', sans-serif;
-    font-size: 14px;
-    letter-spacing: 3px;
-    color: var(--muted);
-    margin-bottom: 16px;
-  }
-
-  .module-icon-wrap {
-    width: 52px;
-    height: 52px;
-    background: rgba(212,255,0,0.08);
-    border: 1px solid rgba(212,255,0,0.2);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 24px;
-    margin-bottom: 20px;
-  }
-
-  .module-title {
-    font-family: 'DM Serif Display', serif;
-    font-size: 22px;
-    color: var(--white);
-    margin-bottom: 12px;
-    line-height: 1.2;
-  }
-
-  .module-desc {
-    font-size: 14px;
-    color: var(--muted);
-    line-height: 1.6;
-  }
-
-  .module-tag {
-    display: inline-block;
-    margin-top: 20px;
-    font-size: 11px;
-    font-weight: 600;
-    letter-spacing: 1.5px;
-    text-transform: uppercase;
-    color: var(--accent);
-    border: 1px solid rgba(212,255,0,0.3);
-    padding: 4px 10px;
-  }
-
-  .module-card.featured {
-    background: rgba(212,255,0,0.05);
-    border-color: rgba(212,255,0,0.3);
-    grid-column: span 2;
-  }
-  .module-card.featured .module-title { font-size: 28px; }
-
-  /* DEMO SECTION */
-  .demo {
-    background: var(--surface);
-    border-top: 1px solid var(--border);
-    border-bottom: 1px solid var(--border);
-  }
-
-  .demo-window {
-    background: #0d0d0d;
-    border: 1px solid var(--border);
-    margin-top: 64px;
-    overflow: hidden;
-  }
-
-  .demo-bar {
-    background: #1a1a1a;
-    padding: 12px 20px;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    border-bottom: 1px solid var(--border);
-  }
-
-  .demo-dot {
-    width: 10px;
-    height: 10px;
-    border-radius: 50%;
-  }
-
-  .demo-content {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-  }
-
-  .demo-col {
-    padding: 40px;
-  }
-
-  .demo-col + .demo-col {
-    border-left: 1px solid var(--border);
-    background: rgba(212,255,0,0.02);
-  }
-
-  .demo-col-label {
-    font-size: 11px;
-    font-weight: 600;
-    letter-spacing: 2px;
-    text-transform: uppercase;
-    color: var(--muted);
-    margin-bottom: 20px;
-  }
-
-  .demo-prompt {
-    font-size: 15px;
-    color: var(--white);
-    line-height: 1.7;
-    font-family: 'Outfit', monospace;
-  }
-
-  .demo-prompt .prompt-label {
-    color: var(--accent);
-    font-weight: 600;
-  }
-
-  .demo-result {
-    font-size: 15px;
-    color: var(--white);
-    line-height: 1.7;
-  }
-
-  .demo-result p + p { margin-top: 12px; }
-
-  .demo-typing-cursor {
-    display: inline-block;
-    width: 2px;
-    height: 16px;
-    background: var(--accent);
-    animation: blink 1s step-end infinite;
-    vertical-align: middle;
-    margin-left: 2px;
-  }
-  @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
-
-  /* PRICING */
-  .pricing { text-align: center; }
-  .pricing-header { margin-bottom: 64px; }
-  .pricing-header h2 { margin-bottom: 16px; }
-  .pricing-header p { font-size: 18px; color: var(--muted); }
-
-  .pricing-card {
-    max-width: 520px;
-    margin: 0 auto;
-    background: var(--surface);
-    border: 1px solid rgba(212,255,0,0.4);
-    padding: 60px 48px;
-    position: relative;
-    overflow: hidden;
-  }
-
-  .pricing-card::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    height: 3px;
-    background: linear-gradient(90deg, var(--accent), transparent);
-  }
-
-  .pricing-badge {
-    position: absolute;
-    top: 20px;
-    right: 20px;
-    background: var(--red);
-    color: #fff;
-    font-size: 11px;
-    font-weight: 700;
-    letter-spacing: 1.5px;
-    text-transform: uppercase;
-    padding: 5px 12px;
-  }
-
-  .price-old {
-    font-size: 18px;
-    color: var(--muted);
-    text-decoration: line-through;
-    margin-bottom: 8px;
-  }
-
-  .price-main {
-    font-family: 'Bebas Neue', sans-serif;
-    font-size: 96px;
-    color: var(--accent);
-    line-height: 1;
-    margin-bottom: 8px;
-  }
-
-  .price-sub { font-size: 14px; color: var(--muted); margin-bottom: 40px; }
-
-  .pricing-features {
-    list-style: none;
-    text-align: left;
-    margin-bottom: 40px;
-    display: flex;
-    flex-direction: column;
-    gap: 14px;
-  }
-
-  .pricing-features li {
-    display: flex;
-    align-items: flex-start;
-    gap: 12px;
-    font-size: 15px;
-    line-height: 1.4;
-  }
-
-  .pricing-features li::before {
-    content: '✓';
-    color: var(--accent);
-    font-weight: 700;
-    flex-shrink: 0;
-    margin-top: 1px;
-  }
-
-  .btn-buy {
-    display: block;
-    width: 100%;
-    background: var(--accent);
-    color: #000;
-    font-family: 'Outfit', sans-serif;
-    font-weight: 700;
-    font-size: 17px;
-    padding: 20px;
-    border: none;
-    cursor: pointer;
-    text-decoration: none;
-    text-align: center;
-    transition: all 0.2s;
-    letter-spacing: 0.5px;
-  }
-  .btn-buy:hover { background: #fff; transform: translateY(-2px); box-shadow: 0 16px 48px rgba(212,255,0,0.25); }
-
-  .pricing-guarantee {
-    margin-top: 20px;
-    font-size: 13px;
-    color: var(--muted);
-  }
-
-  /* FAQ */
-  .faq { max-width: 760px; margin: 0 auto; }
-  .faq-list { margin-top: 48px; }
-
-  .faq-item {
-    border-bottom: 1px solid var(--border);
-  }
-
-  .faq-q {
-    padding: 24px 0;
-    font-size: 17px;
-    font-weight: 500;
-    cursor: pointer;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    gap: 16px;
-    user-select: none;
-    transition: color 0.2s;
-  }
-  .faq-q:hover { color: var(--accent); }
-
-  .faq-toggle {
-    width: 24px;
-    height: 24px;
-    border: 1px solid var(--border);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex-shrink: 0;
-    font-size: 16px;
-    transition: background 0.2s, border-color 0.2s;
-    font-weight: 300;
-  }
-
-  .faq-item.open .faq-toggle {
-    background: var(--accent);
-    border-color: var(--accent);
-    color: #000;
-  }
-
-  .faq-a {
-    max-height: 0;
-    overflow: hidden;
-    transition: max-height 0.35s ease;
-    font-size: 15px;
-    color: var(--muted);
-    line-height: 1.7;
-  }
-
-  .faq-item.open .faq-a {
-    max-height: 300px;
-  }
-
-  .faq-a-inner { padding-bottom: 24px; }
-
-  /* FOOTER */
-  footer {
-    border-top: 1px solid var(--border);
-    padding: 40px 48px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    flex-wrap: wrap;
-    gap: 16px;
-  }
-
-  .footer-logo {
-    font-family: 'Bebas Neue', sans-serif;
-    font-size: 20px;
-    letter-spacing: 2px;
-    color: var(--accent);
-  }
-
-  .footer-copy { font-size: 13px; color: var(--muted); }
-
-  /* SCROLL REVEAL */
-  .reveal {
-    opacity: 0;
-    transform: translateY(40px);
-    transition: opacity 0.7s ease, transform 0.7s ease;
-  }
-  .reveal.visible {
-    opacity: 1;
-    transform: translateY(0);
-  }
-
-  /* RESPONSIVE */
-  @media (max-width: 900px) {
-    nav { padding: 16px 24px; }
-    .hero { padding: 120px 24px 64px; }
-    section { padding: 80px 24px; }
-    .hero-number { display: none; }
-    .problem-grid { grid-template-columns: 1fr; gap: 48px; }
-    .modules-grid { grid-template-columns: 1fr; }
-    .module-card.featured { grid-column: span 1; }
-    .demo-content { grid-template-columns: 1fr; }
-    .demo-col + .demo-col { border-left: none; border-top: 1px solid var(--border); }
-    footer { padding: 32px 24px; }
-    .pricing-card { padding: 40px 24px; }
-    .stat-row { flex-wrap: wrap; }
-  }
+  .btn-shine:hover::after { transform:translateX(0); }
+  .reveal { opacity:0;transform:translateY(40px);transition:opacity .7s ease,transform .7s ease; }
+  .reveal.visible { opacity:1;transform:translateY(0); }
 </style>
 </head>
-<body>
+<body class="bg-bg text-snow font-sans overflow-x-hidden">
 
 <!-- NAV -->
-<nav id="nav">
-  <div class="nav-logo">AI QUICK START</div>
-  <a href="#kup" class="nav-cta">Kup teraz — 39 zł</a>
+<nav id="nav" class="fixed top-0 inset-x-0 z-50 flex items-center justify-between px-12 py-5 border-b border-transparent transition-all duration-300">
+  <div class="font-display text-accent text-2xl tracking-[4px]">AI QUICK START</div>
+  <a href="#kup" class="buy-link bg-accent text-black font-bold text-xs tracking-widest uppercase px-6 py-2.5 hover:bg-white transition-colors duration-200">Kup teraz — 39 zł</a>
 </nav>
 
 <!-- HERO -->
-<section class="hero">
-  <div class="hero-grid-bg"></div>
-  <div class="hero-number">60</div>
+<section class="relative min-h-screen flex flex-col justify-end px-12 pb-20 pt-32 overflow-hidden">
+  <div class="hero-grid animate-gridShift absolute inset-0 pointer-events-none"></div>
+  <div class="absolute right-12 top-1/2 -translate-y-1/2 font-display text-[25vw] text-accent/[0.04] leading-none select-none pointer-events-none hidden lg:block" style="letter-spacing:-10px">60</div>
 
-  <div class="hero-badge">Gotowe prompty · Bez technicznej wiedzy</div>
+  <div class="animate-fade-up-1 inline-flex items-center gap-2 bg-accent/10 border border-accent/30 text-accent text-[11px] font-semibold tracking-[2px] uppercase px-4 py-2 mb-8 w-fit">
+    <span class="w-1.5 h-1.5 bg-accent rounded-full animate-pulse2"></span>
+    Gotowe prompty · Bez technicznej wiedzy
+  </div>
 
-  <h1>
-    ZBUDUJ<br>
-    SWOJEGO<br>
-    <span class="accent-line">ASYSTENTA AI</span>
-    W 60 MINUT
+  <h1 class="animate-fade-up-2 font-display text-[clamp(72px,11vw,160px)] leading-[.9] tracking-[2px] max-w-4xl">
+    ZBUDUJ<br>SWOJEGO<br><span class="text-accent">ASYSTENTA AI</span><br>W 60 MINUT
   </h1>
 
-  <p class="hero-sub">
-    Przestań robić ręcznie to, co <strong>AI może zrobić za Ciebie.</strong><br>
+  <p class="animate-fade-up-3 font-serif italic text-[clamp(18px,2.5vw,26px)] text-muted mt-6 max-w-xl leading-relaxed">
+    Przestań robić ręcznie to, co <strong class="text-snow not-italic font-sans font-semibold">AI może zrobić za Ciebie.</strong><br>
     Maile, CV, plan dnia, posty — 5 gotowych asystentów do użycia od zaraz.
   </p>
 
-  <div class="hero-actions">
-    <a href="#kup" class="btn-primary">Chcę zaoszczędzić czas →</a>
-    <span class="hero-price-hint">Tylko <strong>39 zł</strong> · Dostęp od razu</span>
+  <div class="animate-fade-up-4 flex items-center gap-6 mt-12 flex-wrap">
+    <a href="#kup" class="buy-link btn-shine relative overflow-hidden inline-block bg-accent text-black font-bold text-base px-10 py-[18px] hover:-translate-y-0.5 hover:shadow-[0_12px_40px_rgba(212,255,0,0.3)] transition-all duration-200">
+      Chcę zaoszczędzić czas →
+    </a>
+    <span class="text-sm text-muted">Tylko <strong class="text-snow">39 zł</strong> · Dostęp od razu</span>
   </div>
 </section>
 
 <!-- TICKER -->
-<div class="ticker">
-  <div class="ticker-inner">
-    <span class="ticker-item">PISANIE MAILI</span>
-    <span class="ticker-item ticker-sep">✦</span>
-    <span class="ticker-item">BUDOWANIE CV</span>
-    <span class="ticker-item ticker-sep">✦</span>
-    <span class="ticker-item">PLANOWANIE DNIA</span>
-    <span class="ticker-item ticker-sep">✦</span>
-    <span class="ticker-item">POSTY NA SOCIAL MEDIA</span>
-    <span class="ticker-item ticker-sep">✦</span>
-    <span class="ticker-item">RESEARCH I NOTATKI</span>
-    <span class="ticker-item ticker-sep">✦</span>
-    <span class="ticker-item">PISANIE MAILI</span>
-    <span class="ticker-item ticker-sep">✦</span>
-    <span class="ticker-item">BUDOWANIE CV</span>
-    <span class="ticker-item ticker-sep">✦</span>
-    <span class="ticker-item">PLANOWANIE DNIA</span>
-    <span class="ticker-item ticker-sep">✦</span>
-    <span class="ticker-item">POSTY NA SOCIAL MEDIA</span>
-    <span class="ticker-item ticker-sep">✦</span>
-    <span class="ticker-item">RESEARCH I NOTATKI</span>
-    <span class="ticker-item ticker-sep">✦</span>
+<div class="bg-accent overflow-hidden whitespace-nowrap py-3">
+  <div class="inline-flex animate-ticker">
+    <span class="font-display text-black text-[15px] tracking-[3px] px-10">PISANIE MAILI</span>
+    <span class="font-display text-black/40 text-[15px] px-10">✦</span>
+    <span class="font-display text-black text-[15px] tracking-[3px] px-10">BUDOWANIE CV</span>
+    <span class="font-display text-black/40 text-[15px] px-10">✦</span>
+    <span class="font-display text-black text-[15px] tracking-[3px] px-10">PLANOWANIE DNIA</span>
+    <span class="font-display text-black/40 text-[15px] px-10">✦</span>
+    <span class="font-display text-black text-[15px] tracking-[3px] px-10">POSTY NA SOCIAL MEDIA</span>
+    <span class="font-display text-black/40 text-[15px] px-10">✦</span>
+    <span class="font-display text-black text-[15px] tracking-[3px] px-10">RESEARCH I NOTATKI</span>
+    <span class="font-display text-black/40 text-[15px] px-10">✦</span>
+    <!-- duplicate for loop -->
+    <span class="font-display text-black text-[15px] tracking-[3px] px-10">PISANIE MAILI</span>
+    <span class="font-display text-black/40 text-[15px] px-10">✦</span>
+    <span class="font-display text-black text-[15px] tracking-[3px] px-10">BUDOWANIE CV</span>
+    <span class="font-display text-black/40 text-[15px] px-10">✦</span>
+    <span class="font-display text-black text-[15px] tracking-[3px] px-10">PLANOWANIE DNIA</span>
+    <span class="font-display text-black/40 text-[15px] px-10">✦</span>
+    <span class="font-display text-black text-[15px] tracking-[3px] px-10">POSTY NA SOCIAL MEDIA</span>
+    <span class="font-display text-black/40 text-[15px] px-10">✦</span>
+    <span class="font-display text-black text-[15px] tracking-[3px] px-10">RESEARCH I NOTATKI</span>
+    <span class="font-display text-black/40 text-[15px] px-10">✦</span>
   </div>
 </div>
 
 <!-- PROBLEM -->
-<section class="problem reveal">
-  <div class="section-label">Problem</div>
-  <div class="problem-grid">
-    <ul class="problem-list">
-      <li>
-        <span class="problem-icon">⏳</span>
-        <span class="problem-text">
-          Tracisz godziny na pisanie maili i dokumentów
-          <span class="problem-sub">To samo zdanie 20 razy, inny adresat</span>
-        </span>
+<section class="reveal bg-surface border-y border-border px-12 py-28">
+  <div class="text-[11px] font-semibold tracking-[3px] uppercase text-accent mb-5 flex items-center gap-3 after:content-[''] after:h-px after:w-10 after:bg-accent">Problem</div>
+  <div class="grid grid-cols-1 lg:grid-cols-2 gap-20 items-center mt-16">
+    <ul class="flex flex-col gap-5">
+      <li class="flex items-start gap-4 p-5 border border-border hover:border-danger/40 transition-colors duration-200">
+        <span class="text-xl shrink-0 mt-0.5">⏳</span>
+        <span><span class="text-snow">Tracisz godziny na pisanie maili i dokumentów</span><span class="block text-sm text-muted mt-1">To samo zdanie 20 razy, inny adresat</span></span>
       </li>
-      <li>
-        <span class="problem-icon">🤷</span>
-        <span class="problem-text">
-          Słyszysz o AI wszędzie, ale nie wiesz od czego zacząć
-          <span class="problem-sub">YouTube daje 4h kursów, ty masz 20 minut</span>
-        </span>
+      <li class="flex items-start gap-4 p-5 border border-border hover:border-danger/40 transition-colors duration-200">
+        <span class="text-xl shrink-0 mt-0.5">🤷</span>
+        <span><span class="text-snow">Słyszysz o AI wszędzie, ale nie wiesz od czego zacząć</span><span class="block text-sm text-muted mt-1">YouTube daje 4h kursów, ty masz 20 minut</span></span>
       </li>
-      <li>
-        <span class="problem-icon">😤</span>
-        <span class="problem-text">
-          Piszesz coś do ChatGPT, dostajesz bełkot i rezygnujesz
-          <span class="problem-sub">Bez dobrego promptu — wynik jest do kosza</span>
-        </span>
+      <li class="flex items-start gap-4 p-5 border border-border hover:border-danger/40 transition-colors duration-200">
+        <span class="text-xl shrink-0 mt-0.5">😤</span>
+        <span><span class="text-snow">Piszesz coś do ChatGPT, dostajesz bełkot i rezygnujesz</span><span class="block text-sm text-muted mt-1">Bez dobrego promptu — wynik jest do kosza</span></span>
       </li>
-      <li>
-        <span class="problem-icon">📉</span>
-        <span class="problem-text">
-          Twoi znajomi ogarniają AI, a ty zostajsz w tyle
-          <span class="problem-sub">To nie moda — to nowy standard pracy</span>
-        </span>
+      <li class="flex items-start gap-4 p-5 border border-border hover:border-danger/40 transition-colors duration-200">
+        <span class="text-xl shrink-0 mt-0.5">📉</span>
+        <span><span class="text-snow">Twoi znajomi ogarniają AI, a ty zostajesz w tyle</span><span class="block text-sm text-muted mt-1">To nie moda — to nowy standard pracy</span></span>
       </li>
     </ul>
-
-    <div class="problem-right">
-      <h2>CZAS TO<br>TWÓJ<br>KAPITAŁ</h2>
-      <p>
-        Przeciętny pracownik traci <strong>2–3 godziny dziennie</strong> na zadania, które
-        AI mogłoby zrobić w 30 sekund. To nie jest kwestia talentu — to kwestia
-        posiadania <strong>właściwych narzędzi i gotowych promptów.</strong>
+    <div>
+      <h2 class="font-display text-[clamp(48px,7vw,96px)] leading-[.95] tracking-wide mb-6">CZAS TO<br>TWÓJ<br>KAPITAŁ</h2>
+      <p class="text-lg text-muted leading-relaxed max-w-md">
+        Przeciętny pracownik traci <strong class="text-snow">2–3 godziny dziennie</strong> na zadania, które AI mogłoby zrobić w 30 sekund. To kwestia posiadania <strong class="text-snow">właściwych narzędzi i gotowych promptów.</strong>
       </p>
-      <div class="stat-row">
-        <div class="stat">
-          <span class="stat-num">2h</span>
-          <span class="stat-desc">dziennie oszczędności przy regularnym użyciu AI</span>
-        </div>
-        <div class="stat">
-          <span class="stat-num">60'</span>
-          <span class="stat-desc">tyle zajmuje wdrożenie całego systemu z tego ebooka</span>
-        </div>
-        <div class="stat">
-          <span class="stat-num">5</span>
-          <span class="stat-desc">gotowych asystentów do użycia od zaraz</span>
-        </div>
+      <div class="flex flex-wrap gap-10 mt-12">
+        <div><div class="font-display text-[56px] text-accent leading-none">2h</div><div class="text-xs text-muted mt-1 max-w-[120px]">dziennie oszczędności przy regularnym użyciu AI</div></div>
+        <div><div class="font-display text-[56px] text-accent leading-none">60'</div><div class="text-xs text-muted mt-1 max-w-[120px]">tyle zajmuje wdrożenie całego systemu z ebooka</div></div>
+        <div><div class="font-display text-[56px] text-accent leading-none">5</div><div class="text-xs text-muted mt-1 max-w-[120px]">gotowych asystentów do użycia od zaraz</div></div>
       </div>
     </div>
   </div>
 </section>
 
 <!-- MODULES -->
-<section class="modules reveal">
-  <div class="modules-header">
+<section class="reveal px-12 py-28">
+  <div class="flex items-end justify-between mb-16 flex-wrap gap-6">
     <div>
-      <div class="section-label">Co dostajesz</div>
-      <h2>5 ASYSTENTÓW<br>DO PRACY</h2>
+      <div class="text-[11px] font-semibold tracking-[3px] uppercase text-accent mb-5 flex items-center gap-3 after:content-[''] after:h-px after:w-10 after:bg-accent">Co dostajesz</div>
+      <h2 class="font-display text-[clamp(48px,7vw,96px)] leading-[.95] tracking-wide">5 ASYSTENTÓW<br>DO PRACY</h2>
     </div>
-    <p style="font-size:16px; color:var(--muted); max-width:320px; line-height:1.6;">
-      Każdy asystent to gotowy prompt, przykład działania i instrukcja. Wklejasz, używasz.
-    </p>
+    <p class="text-base text-muted max-w-xs leading-relaxed">Każdy asystent to gotowy prompt, przykład działania i instrukcja. Wklejasz, używasz.</p>
   </div>
 
-  <div class="modules-grid">
-
-    <div class="module-card featured">
-      <div class="module-num">01 / 05</div>
-      <div class="module-icon-wrap">✉️</div>
-      <div class="module-title">Asystent do maili i komunikacji</div>
-      <p class="module-desc">
-        Pisz profesjonalne maile w 10 sekund. Wklej temat, ton i odbiorcę — dostajesz gotową wiadomość.
-        Działa dla follow-upów, reklamacji, ofert i odpowiedzi na trudnych klientów.
-      </p>
-      <span class="module-tag">Natychmiastowy efekt</span>
+  <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-0.5">
+    <div class="module-card relative md:col-span-2 bg-accent/5 border border-accent/30 p-10 overflow-hidden hover:border-accent/50 hover:-translate-y-1 transition-all duration-300">
+      <div class="font-display text-[13px] tracking-[3px] text-muted mb-4">01 / 05</div>
+      <div class="w-12 h-12 bg-accent/10 border border-accent/20 flex items-center justify-center text-2xl mb-5">✉️</div>
+      <h3 class="font-serif text-[28px] text-snow mb-3 leading-tight">Asystent do maili i komunikacji</h3>
+      <p class="text-sm text-muted leading-relaxed">Pisz profesjonalne maile w 10 sekund. Wklej temat, ton i odbiorcę — dostajesz gotową wiadomość. Działa dla follow-upów, reklamacji, ofert i odpowiedzi na trudnych klientów.</p>
+      <span class="inline-block mt-5 text-[11px] font-semibold tracking-[1.5px] uppercase text-accent border border-accent/30 px-2.5 py-1">Natychmiastowy efekt</span>
     </div>
-
-    <div class="module-card">
-      <div class="module-num">02 / 05</div>
-      <div class="module-icon-wrap">📄</div>
-      <div class="module-title">Asystent do CV i LinkedIn</div>
-      <p class="module-desc">
-        Opisz doświadczenie po ludzku — AI przerabia to na bullet pointy, które rekruterzy chcą widzieć.
-      </p>
-      <span class="module-tag">Kariera</span>
+    <div class="module-card relative bg-surface border border-border p-10 overflow-hidden hover:border-accent/20 hover:-translate-y-1 transition-all duration-300">
+      <div class="font-display text-[13px] tracking-[3px] text-muted mb-4">02 / 05</div>
+      <div class="w-12 h-12 bg-accent/10 border border-accent/20 flex items-center justify-center text-2xl mb-5">📄</div>
+      <h3 class="font-serif text-[22px] text-snow mb-3 leading-tight">Asystent do CV i LinkedIn</h3>
+      <p class="text-sm text-muted leading-relaxed">Opisz doświadczenie po ludzku — AI przerabia to na bullet pointy, które rekruterzy chcą widzieć.</p>
+      <span class="inline-block mt-5 text-[11px] font-semibold tracking-[1.5px] uppercase text-accent border border-accent/30 px-2.5 py-1">Kariera</span>
     </div>
-
-    <div class="module-card">
-      <div class="module-num">03 / 05</div>
-      <div class="module-icon-wrap">📅</div>
-      <div class="module-title">Asystent do planowania dnia</div>
-      <p class="module-desc">
-        Chaos w głowie zamień w konkretny plan. AI sortuje priorytety i tworzy harmonogram z listy zadań.
-      </p>
-      <span class="module-tag">Produktywność</span>
+    <div class="module-card relative bg-surface border border-border p-10 overflow-hidden hover:border-accent/20 hover:-translate-y-1 transition-all duration-300">
+      <div class="font-display text-[13px] tracking-[3px] text-muted mb-4">03 / 05</div>
+      <div class="w-12 h-12 bg-accent/10 border border-accent/20 flex items-center justify-center text-2xl mb-5">📅</div>
+      <h3 class="font-serif text-[22px] text-snow mb-3 leading-tight">Asystent do planowania dnia</h3>
+      <p class="text-sm text-muted leading-relaxed">Chaos w głowie zamień w konkretny plan. AI sortuje priorytety i tworzy harmonogram z listy zadań.</p>
+      <span class="inline-block mt-5 text-[11px] font-semibold tracking-[1.5px] uppercase text-accent border border-accent/30 px-2.5 py-1">Produktywność</span>
     </div>
-
-    <div class="module-card">
-      <div class="module-num">04 / 05</div>
-      <div class="module-icon-wrap">📱</div>
-      <div class="module-title">Asystent do postów i social media</div>
-      <p class="module-desc">
-        Instagram, LinkedIn, Twitter — jeden temat, trzy formaty, gotowe do wklejenia.
-      </p>
-      <span class="module-tag">Content</span>
+    <div class="module-card relative bg-surface border border-border p-10 overflow-hidden hover:border-accent/20 hover:-translate-y-1 transition-all duration-300">
+      <div class="font-display text-[13px] tracking-[3px] text-muted mb-4">04 / 05</div>
+      <div class="w-12 h-12 bg-accent/10 border border-accent/20 flex items-center justify-center text-2xl mb-5">📱</div>
+      <h3 class="font-serif text-[22px] text-snow mb-3 leading-tight">Asystent do postów i social media</h3>
+      <p class="text-sm text-muted leading-relaxed">Instagram, LinkedIn, Twitter — jeden temat, trzy formaty, gotowe do wklejenia.</p>
+      <span class="inline-block mt-5 text-[11px] font-semibold tracking-[1.5px] uppercase text-accent border border-accent/30 px-2.5 py-1">Content</span>
     </div>
-
-    <div class="module-card">
-      <div class="module-num">05 / 05</div>
-      <div class="module-icon-wrap">🔍</div>
-      <div class="module-title">Asystent do researchu i notatek</div>
-      <p class="module-desc">
-        Podsumowania, raporty, wyciąganie kluczowych wniosków — research za Ciebie.
-      </p>
-      <span class="module-tag">Analiza</span>
+    <div class="module-card relative bg-surface border border-border p-10 overflow-hidden hover:border-accent/20 hover:-translate-y-1 transition-all duration-300">
+      <div class="font-display text-[13px] tracking-[3px] text-muted mb-4">05 / 05</div>
+      <div class="w-12 h-12 bg-accent/10 border border-accent/20 flex items-center justify-center text-2xl mb-5">🔍</div>
+      <h3 class="font-serif text-[22px] text-snow mb-3 leading-tight">Asystent do researchu i notatek</h3>
+      <p class="text-sm text-muted leading-relaxed">Podsumowania, raporty, wyciąganie kluczowych wniosków — research za Ciebie.</p>
+      <span class="inline-block mt-5 text-[11px] font-semibold tracking-[1.5px] uppercase text-accent border border-accent/30 px-2.5 py-1">Analiza</span>
     </div>
-
-    <div class="module-card" style="background:rgba(212,255,0,0.03); border-color:rgba(212,255,0,0.2);">
-      <div class="module-num">BONUS</div>
-      <div class="module-icon-wrap">⚡</div>
-      <div class="module-title">Setup w 10 minut</div>
-      <p class="module-desc">
-        Jak zacząć z ChatGPT, jak pisać prompty i jak zbudować swój system — prosto, bez żargonu.
-      </p>
-      <span class="module-tag">Dla zupełnych noobów</span>
+    <div class="module-card relative bg-accent/[0.03] border border-accent/20 p-10 overflow-hidden hover:border-accent/30 hover:-translate-y-1 transition-all duration-300">
+      <div class="font-display text-[13px] tracking-[3px] text-muted mb-4">BONUS</div>
+      <div class="w-12 h-12 bg-accent/10 border border-accent/20 flex items-center justify-center text-2xl mb-5">⚡</div>
+      <h3 class="font-serif text-[22px] text-snow mb-3 leading-tight">Setup w 10 minut</h3>
+      <p class="text-sm text-muted leading-relaxed">Jak zacząć z ChatGPT, jak pisać prompty i jak zbudować swój system — prosto, bez żargonu.</p>
+      <span class="inline-block mt-5 text-[11px] font-semibold tracking-[1.5px] uppercase text-accent border border-accent/30 px-2.5 py-1">Dla zupełnych noobów</span>
     </div>
-
   </div>
 </section>
 
 <!-- DEMO -->
-<section class="demo reveal">
-  <div class="section-label">Zobacz jak to działa</div>
-  <h2>PROMPT →<br>WYNIK</h2>
-
-  <div class="demo-window">
-    <div class="demo-bar">
-      <div class="demo-dot" style="background:#ff5f57"></div>
-      <div class="demo-dot" style="background:#ffbd2e"></div>
-      <div class="demo-dot" style="background:#28ca41"></div>
-      <span style="font-size:12px; color:var(--muted); margin-left:12px;">ChatGPT — Asystent Mailowy</span>
+<section class="reveal bg-surface border-y border-border px-12 py-28">
+  <div class="text-[11px] font-semibold tracking-[3px] uppercase text-accent mb-5 flex items-center gap-3 after:content-[''] after:h-px after:w-10 after:bg-accent">Zobacz jak to działa</div>
+  <h2 class="font-display text-[clamp(48px,7vw,96px)] leading-[.95] tracking-wide mb-16">PROMPT →<br>WYNIK</h2>
+  <div class="border border-border overflow-hidden">
+    <div class="bg-[#1a1a1a] border-b border-border px-5 py-3 flex items-center gap-2">
+      <div class="w-2.5 h-2.5 rounded-full bg-[#ff5f57]"></div>
+      <div class="w-2.5 h-2.5 rounded-full bg-[#ffbd2e]"></div>
+      <div class="w-2.5 h-2.5 rounded-full bg-[#28ca41]"></div>
+      <span class="text-xs text-muted ml-3">ChatGPT — Asystent Mailowy</span>
     </div>
-    <div class="demo-content">
-      <div class="demo-col">
-        <div class="demo-col-label">Twój prompt (gotowy z ebooka)</div>
-        <div class="demo-prompt">
-          <span class="prompt-label">TY:</span><br><br>
-          Napisz profesjonalny mail do klienta, który nie odpisał od 2 tygodni.<br><br>
+    <div class="grid grid-cols-1 lg:grid-cols-2">
+      <div class="p-10">
+        <div class="text-[11px] font-semibold tracking-[2px] uppercase text-muted mb-5">Twój prompt (gotowy z ebooka)</div>
+        <div class="text-[15px] text-snow leading-relaxed font-mono">
+          <span class="text-accent font-sans font-semibold">TY:</span><br><br>
+          Napisz profesjonalny mail do klienta,<br>który nie odpisał od 2 tygodni.<br><br>
           Ton: uprzejmy, ale konkretny.<br>
           Cel: umówienie rozmowy w tym tygodniu.<br>
           Moje imię: Hubert<br>
           Firma: XYZ Sp. z o.o.
         </div>
       </div>
-      <div class="demo-col">
-        <div class="demo-col-label">Odpowiedź AI (w 3 sekundy)</div>
-        <div class="demo-result">
+      <div class="p-10 border-t lg:border-t-0 lg:border-l border-border bg-accent/[0.02]">
+        <div class="text-[11px] font-semibold tracking-[2px] uppercase text-muted mb-5">Odpowiedź AI (w 3 sekundy)</div>
+        <div class="text-[15px] text-snow leading-relaxed space-y-3">
           <p><strong>Temat:</strong> Czy możemy porozmawiać w tym tygodniu?</p>
           <p>Dzień dobry,</p>
           <p>Chciałem wrócić do naszej poprzedniej rozmowy i sprawdzić, czy mają Państwo chwilę na krótki call w tym tygodniu.</p>
-          <p>Zależy mi, żebyśmy mogli omówić kolejne kroki — czy czwartek lub piątek byłby odpowiedni?</p>
-          <p>Pozdrawiam,<br>Hubert<br>XYZ Sp. z o.o.</p>
-          <span class="demo-typing-cursor"></span>
+          <p>Czy czwartek lub piątek byłby odpowiedni?</p>
+          <p>Pozdrawiam,<br>Hubert · XYZ Sp. z o.o.</p>
+          <span class="inline-block w-0.5 h-4 bg-accent align-middle animate-blink ml-0.5"></span>
         </div>
       </div>
     </div>
@@ -982,137 +263,168 @@
 </section>
 
 <!-- PRICING -->
-<section class="pricing reveal" id="kup">
-  <div class="pricing-header">
-    <div class="section-label" style="justify-content:center;">Oferta</div>
-    <h2>JEDEN RAZ.<br>UŻYWASZ FOREVER.</h2>
-    <p>Bez subskrypcji. Bez comiesięcznych opłat. Płacisz raz, masz na zawsze.</p>
-  </div>
+<section class="reveal px-12 py-28 text-center" id="kup">
+  <div class="text-[11px] font-semibold tracking-[3px] uppercase text-accent mb-5 flex items-center justify-center gap-3 before:content-[''] before:h-px before:w-10 before:bg-accent after:content-[''] after:h-px after:w-10 after:bg-accent">Oferta</div>
+  <h2 class="font-display text-[clamp(48px,7vw,96px)] leading-[.95] tracking-wide mb-4">JEDEN RAZ.<br>UŻYWASZ FOREVER.</h2>
+  <p class="text-lg text-muted mb-16">Bez subskrypcji. Bez comiesięcznych opłat. Płacisz raz, masz na zawsze.</p>
 
-  <div class="pricing-card">
-    <span class="pricing-badge">🔥 Premiera</span>
-
-    <div class="price-old">79 zł</div>
-    <div class="price-main">39<span style="font-size:32px;color:var(--muted)"> ZŁ</span></div>
-    <div class="price-sub">jednorazowa płatność · PDF + bonus · dostęp od razu</div>
-
-    <ul class="pricing-features">
-      <li>5 gotowych asystentów AI (maile, CV, planowanie, social, research)</li>
-      <li>Gotowe prompty do skopiowania — bez myślenia</li>
-      <li>Setup w 10 minut — nawet jeśli nigdy nie używałeś AI</li>
-      <li>Przykłady przed i po dla każdego asystenta</li>
-      <li>PDF dostępny od razu po zakupie</li>
-      <li>Dożywotni dostęp + przyszłe aktualizacje</li>
+  <div class="relative max-w-lg mx-auto bg-surface border border-accent/40 px-12 py-16 before:content-[''] before:absolute before:top-0 before:left-0 before:right-0 before:h-[3px] before:bg-gradient-to-r before:from-accent before:to-transparent">
+    <span class="absolute top-5 right-5 bg-danger text-white text-[11px] font-bold tracking-[1.5px] uppercase px-3 py-1">🔥 Premiera</span>
+    <div class="text-lg text-muted line-through mb-2">79 zł</div>
+    <div class="font-display text-[96px] text-accent leading-none mb-2">39<span class="text-[32px] text-muted"> ZŁ</span></div>
+    <div class="text-sm text-muted mb-10">jednorazowa płatność · PDF + bonus · dostęp od razu</div>
+    <ul class="text-left space-y-3.5 mb-10">
+      <li class="flex items-start gap-3 text-[15px] text-snow/90"><span class="text-accent font-bold shrink-0">✓</span>5 gotowych asystentów AI (maile, CV, planowanie, social, research)</li>
+      <li class="flex items-start gap-3 text-[15px] text-snow/90"><span class="text-accent font-bold shrink-0">✓</span>Gotowe prompty do skopiowania — bez myślenia</li>
+      <li class="flex items-start gap-3 text-[15px] text-snow/90"><span class="text-accent font-bold shrink-0">✓</span>Setup w 10 minut — nawet jeśli nigdy nie używałeś AI</li>
+      <li class="flex items-start gap-3 text-[15px] text-snow/90"><span class="text-accent font-bold shrink-0">✓</span>Przykłady przed i po dla każdego asystenta</li>
+      <li class="flex items-start gap-3 text-[15px] text-snow/90"><span class="text-accent font-bold shrink-0">✓</span>PDF dostępny od razu po zakupie</li>
+      <li class="flex items-start gap-3 text-[15px] text-snow/90"><span class="text-accent font-bold shrink-0">✓</span>Dożywotni dostęp + przyszłe aktualizacje</li>
     </ul>
+    <a href="#" class="buy-link block w-full bg-accent text-black font-bold text-lg py-5 text-center hover:bg-white hover:-translate-y-0.5 hover:shadow-[0_16px_48px_rgba(212,255,0,0.25)] transition-all duration-200">
+      Kupuję za 39 zł →
+    </a>
+    <p class="mt-4 text-sm text-muted">🔒 Bezpieczna płatność · Faktura VAT na życzenie</p>
 
-    <a href="#" class="btn-buy">Kupuję za 39 zł →</a>
-    <p class="pricing-guarantee">🔒 Bezpieczna płatność · Faktura VAT na życzenie</p>
+    <!-- Inline guarantee nudge -->
+    <div class="mt-6 flex items-start gap-3 bg-white/[0.03] border border-white/10 p-4 text-left">
+      <span class="text-2xl shrink-0">🛡️</span>
+      <p class="text-sm text-muted leading-relaxed">Nie podoba Ci się? Napisz do nas na <a id="guarantee-email-inline" href="#" class="text-accent hover:underline">kontakt@TWOJADOMENA.pl</a> w ciągu 14 dni — <strong class="text-snow">zwrócimy Ci pieniądze bez pytań.</strong></p>
+    </div>
+  </div>
+</section>
+
+<!-- GUARANTEE -->
+<section class="reveal border-t border-border px-12 py-24">
+  <div class="max-w-3xl mx-auto flex flex-col md:flex-row items-center gap-12">
+    <!-- Shield graphic -->
+    <div class="shrink-0 w-36 h-36 border-2 border-accent/40 flex items-center justify-center relative">
+      <div class="absolute inset-2 border border-accent/20"></div>
+      <span class="text-6xl">🛡️</span>
+    </div>
+    <!-- Text -->
+    <div>
+      <div class="text-[11px] font-semibold tracking-[3px] uppercase text-accent mb-3 flex items-center gap-3 after:content-[''] after:h-px after:w-10 after:bg-accent">Gwarancja satysfakcji</div>
+      <h2 class="font-display text-[clamp(36px,5vw,64px)] leading-[.95] tracking-wide mb-5">JEŚLI NIE JESTEŚ ZADOWOLONY —<br><span class="text-accent">ODDAMY CI PIENIĄDZE.</span></h2>
+      <p class="text-[16px] text-muted leading-relaxed mb-6 max-w-lg">
+        Wierzymy w to, co tworzymy. Jeśli w ciągu <strong class="text-snow">14 dni od zakupu</strong> uznasz, że produkt nie spełnił Twoich oczekiwań — napisz do nas jednego maila. Bez tłumaczenia się, bez procedur. <strong class="text-snow">Zwrot w 100%.</strong>
+      </p>
+      <a id="guarantee-email" href="#" class="inline-flex items-center gap-2 text-accent font-semibold text-[15px] hover:underline">
+        <span>✉</span><span></span>
+      </a>
+    </div>
   </div>
 </section>
 
 <!-- FAQ -->
-<section style="padding: 80px 48px;">
-  <div class="faq reveal">
-    <div class="section-label">FAQ</div>
-    <h2>PYTANIA</h2>
-
-    <div class="faq-list">
+<section class="reveal px-12 py-20 border-t border-border">
+  <div class="max-w-3xl mx-auto">
+    <div class="text-[11px] font-semibold tracking-[3px] uppercase text-accent mb-5 flex items-center gap-3 after:content-[''] after:h-px after:w-10 after:bg-accent">FAQ</div>
+    <h2 class="font-display text-[clamp(48px,7vw,96px)] leading-[.95] tracking-wide mb-12">PYTANIA</h2>
+    <div class="divide-y divide-border">
       <div class="faq-item">
-        <div class="faq-q">
-          Czy muszę znać się na technologii?
-          <div class="faq-toggle">+</div>
-        </div>
-        <div class="faq-a">
-          <div class="faq-a-inner">Absolutnie nie. Ebook jest napisany dla zupełnych początkujących. Jeśli umiesz wkleić tekst i nacisnąć Enter — dasz radę. Tłumaczymy wszystko od podstaw, bez żargonu.</div>
-        </div>
+        <button class="faq-q w-full text-left py-6 text-[17px] font-medium flex justify-between items-center gap-4 hover:text-accent transition-colors">Czy muszę znać się na technologii?<span class="faq-toggle w-6 h-6 border border-border flex items-center justify-center shrink-0 font-light transition-all">+</span></button>
+        <div class="faq-a max-h-0 overflow-hidden transition-all duration-300"><p class="pb-6 text-[15px] text-muted leading-relaxed">Absolutnie nie. Ebook jest napisany dla zupełnych początkujących. Jeśli umiesz wkleić tekst i nacisnąć Enter — dasz radę. Tłumaczymy wszystko od podstaw, bez żargonu.</p></div>
       </div>
       <div class="faq-item">
-        <div class="faq-q">
-          Czy muszę płacić za ChatGPT?
-          <div class="faq-toggle">+</div>
-        </div>
-        <div class="faq-a">
-          <div class="faq-a-inner">Wszystkie asystenty działają na darmowej wersji ChatGPT. Oczywiście wersja płatna działa lepiej, ale nie jest wymagana żeby zacząć i zobaczyć efekty.</div>
-        </div>
+        <button class="faq-q w-full text-left py-6 text-[17px] font-medium flex justify-between items-center gap-4 hover:text-accent transition-colors">Czy muszę płacić za ChatGPT?<span class="faq-toggle w-6 h-6 border border-border flex items-center justify-center shrink-0 font-light transition-all">+</span></button>
+        <div class="faq-a max-h-0 overflow-hidden transition-all duration-300"><p class="pb-6 text-[15px] text-muted leading-relaxed">Wszystkie asystenty działają na darmowej wersji ChatGPT. Wersja płatna działa lepiej, ale nie jest wymagana żeby zacząć.</p></div>
       </div>
       <div class="faq-item">
-        <div class="faq-q">
-          Kiedy dostanę dostęp?
-          <div class="faq-toggle">+</div>
-        </div>
-        <div class="faq-a">
-          <div class="faq-a-inner">Od razu po płatności. Na maila dostaniesz link do pobrania PDF. Bez czekania, bez rejestracji, bez stresu.</div>
-        </div>
+        <button class="faq-q w-full text-left py-6 text-[17px] font-medium flex justify-between items-center gap-4 hover:text-accent transition-colors">Kiedy dostanę dostęp?<span class="faq-toggle w-6 h-6 border border-border flex items-center justify-center shrink-0 font-light transition-all">+</span></button>
+        <div class="faq-a max-h-0 overflow-hidden transition-all duration-300"><p class="pb-6 text-[15px] text-muted leading-relaxed">Od razu po płatności. Na maila dostaniesz link do pobrania PDF. Bez czekania, bez rejestracji.</p></div>
       </div>
       <div class="faq-item">
-        <div class="faq-q">
-          A co jeśli to nie będzie dla mnie?
-          <div class="faq-toggle">+</div>
-        </div>
-        <div class="faq-a">
-          <div class="faq-a-inner">Rozumiemy. Jeśli w ciągu 14 dni stwierdzisz, że ebook nie był wart swojej ceny — napisz, zwrócimy pieniądze. Bez pytań.</div>
-        </div>
+        <button class="faq-q w-full text-left py-6 text-[17px] font-medium flex justify-between items-center gap-4 hover:text-accent transition-colors">A co jeśli to nie będzie dla mnie?<span class="faq-toggle w-6 h-6 border border-border flex items-center justify-center shrink-0 font-light transition-all">+</span></button>
+        <div class="faq-a max-h-0 overflow-hidden transition-all duration-300"><p class="pb-6 text-[15px] text-muted leading-relaxed">Jeśli w ciągu 14 dni stwierdzisz, że ebook nie był wart swojej ceny — napisz, zwrócimy pieniądze. Bez pytań.</p></div>
       </div>
       <div class="faq-item">
-        <div class="faq-q">
-          Czy to aktualny materiał? AI się zmienia szybko...
-          <div class="faq-toggle">+</div>
-        </div>
-        <div class="faq-a">
-          <div class="faq-a-inner">Tak. Aktualizujemy materiał przy większych zmianach ChatGPT. Kupujesz raz — dostajesz przyszłe wersje bezpłatnie.</div>
-        </div>
+        <button class="faq-q w-full text-left py-6 text-[17px] font-medium flex justify-between items-center gap-4 hover:text-accent transition-colors">Czy to aktualny materiał?<span class="faq-toggle w-6 h-6 border border-border flex items-center justify-center shrink-0 font-light transition-all">+</span></button>
+        <div class="faq-a max-h-0 overflow-hidden transition-all duration-300"><p class="pb-6 text-[15px] text-muted leading-relaxed">Tak. Aktualizujemy materiał przy większych zmianach ChatGPT. Kupujesz raz — dostajesz przyszłe wersje bezpłatnie.</p></div>
       </div>
     </div>
   </div>
 </section>
 
 <!-- FINAL CTA -->
-<section style="padding: 80px 48px; text-align:center; border-top: 1px solid var(--border);">
-  <div class="reveal">
-    <div class="section-label" style="justify-content:center;">Ostatni krok</div>
-    <h2 style="margin-bottom:24px;">PRZESTAŃ TRACIĆ CZAS.<br><span style="color:var(--accent)">ZACZNIJ DZIŚ.</span></h2>
-    <p style="font-size:18px; color:var(--muted); margin-bottom:40px;">60 minut inwestycji. Oszczędność każdego dnia.</p>
-    <a href="#kup" class="btn-primary" style="font-size:18px; padding:22px 56px;">Zbuduj asystenta AI za 39 zł →</a>
-  </div>
+<section class="reveal text-center px-12 py-28 border-t border-border">
+  <div class="text-[11px] font-semibold tracking-[3px] uppercase text-accent mb-5 flex items-center justify-center gap-3 before:content-[''] before:h-px before:w-10 before:bg-accent after:content-[''] after:h-px after:w-10 after:bg-accent">Ostatni krok</div>
+  <h2 class="font-display text-[clamp(48px,7vw,96px)] leading-[.95] tracking-wide mb-6">PRZESTAŃ TRACIĆ CZAS.<br><span class="text-accent">ZACZNIJ DZIŚ.</span></h2>
+  <p class="text-lg text-muted mb-12">60 minut inwestycji. Oszczędność każdego dnia.</p>
+  <a href="#kup" class="buy-link btn-shine relative overflow-hidden inline-block bg-accent text-black font-bold text-lg px-14 py-6 hover:-translate-y-0.5 hover:shadow-[0_16px_48px_rgba(212,255,0,0.25)] transition-all duration-200">
+    Zbuduj asystenta AI za 39 zł →
+  </a>
 </section>
 
 <!-- FOOTER -->
-<footer>
-  <div class="footer-logo">AI QUICK START</div>
-  <div class="footer-copy">© 2025 · Wszelkie prawa zastrzeżone</div>
-  <div style="font-size:13px; color:var(--muted);">Regulamin · Polityka prywatności</div>
+<footer class="border-t border-border px-12 py-10 flex items-center justify-between flex-wrap gap-4">
+  <div class="font-display text-accent text-xl tracking-[3px]">AI QUICK START</div>
+  <div class="text-sm text-muted">© <span id="current-year"></span> · Wszelkie prawa zastrzeżone · <a id="footer-contact" href="#" class="hover:text-snow transition-colors"></a></div>
+  <div class="flex gap-4 text-sm text-muted">
+    <a id="link-regulamin" href="#" class="hover:text-snow transition-colors">Regulamin</a>
+    <a id="link-privacy" href="#" class="hover:text-snow transition-colors">Polityka prywatności</a>
+  </div>
 </footer>
 
 <script>
+  /* ============================================================
+     KONFIGURACJA — zmień przed wypuszczeniem
+     ============================================================ */
+  const CONFIG = {
+    paymentUrl:   "https://WSTAW_LINK_DO_PLATNOSCI",
+    contactEmail: "kontakt@TWOJADOMENA.pl",
+    siteUrl:      "https://TWOJADOMENA.pl",
+    regulaminUrl: "regulamin.html",
+    privacyUrl:   "polityka-prywatnosci.html",
+  };
+  /* ============================================================ */
+
+  document.querySelectorAll('.buy-link').forEach(el => { el.href = CONFIG.paymentUrl; });
+
+  // Guarantee emails
+  ['guarantee-email', 'guarantee-email-inline'].forEach(id => {
+    const el = document.getElementById(id);
+    if (!el) return;
+    el.href = `mailto:${CONFIG.contactEmail}`;
+    if (el.querySelector('span:last-child')) el.querySelector('span:last-child').textContent = CONFIG.contactEmail;
+    else el.textContent = CONFIG.contactEmail;
+  });
+  document.getElementById('link-regulamin').href        = CONFIG.regulaminUrl;
+  document.getElementById('link-privacy').href          = CONFIG.privacyUrl;
+  document.getElementById('footer-contact').textContent = CONFIG.contactEmail;
+  document.getElementById('footer-contact').href        = `mailto:${CONFIG.contactEmail}`;
+  document.getElementById('current-year').textContent   = new Date().getFullYear();
+
   // Nav scroll
   const nav = document.getElementById('nav');
   window.addEventListener('scroll', () => {
-    nav.classList.toggle('scrolled', window.scrollY > 40);
+    nav.style.background    = window.scrollY > 40 ? 'rgba(10,10,10,0.95)' : '';
+    nav.style.backdropFilter= window.scrollY > 40 ? 'blur(12px)' : '';
+    nav.style.borderColor   = window.scrollY > 40 ? '#222' : 'transparent';
   });
 
   // Scroll reveal
-  const reveals = document.querySelectorAll('.reveal');
-  const observer = new IntersectionObserver((entries) => {
-    entries.forEach(entry => {
-      if (entry.isIntersecting) {
-        entry.target.classList.add('visible');
-        observer.unobserve(entry.target);
-      }
-    });
-  }, { threshold: 0.1 });
-  reveals.forEach(el => observer.observe(el));
+  const io = new IntersectionObserver(es => es.forEach(e => { if(e.isIntersecting){ e.target.classList.add('visible'); io.unobserve(e.target); }}), { threshold:.1 });
+  document.querySelectorAll('.reveal').forEach(el => io.observe(el));
 
-  // FAQ accordion
-  document.querySelectorAll('.faq-q').forEach(q => {
-    q.addEventListener('click', () => {
-      const item = q.parentElement;
-      const isOpen = item.classList.contains('open');
-      document.querySelectorAll('.faq-item').forEach(i => i.classList.remove('open'));
-      if (!isOpen) item.classList.add('open');
-      q.querySelector('.faq-toggle').textContent = item.classList.contains('open') ? '−' : '+';
+  // FAQ
+  document.querySelectorAll('.faq-item').forEach(item => {
+    item.querySelector('.faq-q').addEventListener('click', () => {
+      const open = item.dataset.open === '1';
+      document.querySelectorAll('.faq-item').forEach(i => {
+        i.dataset.open = '0';
+        i.querySelector('.faq-a').style.maxHeight = '0';
+        const t = i.querySelector('.faq-toggle');
+        t.textContent = '+'; t.style.background=''; t.style.color=''; t.style.borderColor='';
+      });
+      if (!open) {
+        item.dataset.open = '1';
+        item.querySelector('.faq-a').style.maxHeight = item.querySelector('.faq-a').scrollHeight + 'px';
+        const t = item.querySelector('.faq-toggle');
+        t.textContent = '−'; t.style.background='#d4ff00'; t.style.color='#000'; t.style.borderColor='#d4ff00';
+      }
     });
   });
 </script>
-
 </body>
 </html>
